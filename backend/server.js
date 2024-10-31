@@ -1,31 +1,61 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const AWS = require("aws-sdk");
+const { auth } = require("express-oauth2-jwt-bearer");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
+const mongoose = require("mongoose");
 require("dotenv").config(); // Load environment variables
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// Configure AWS SDK
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+const jwtCheck = auth({
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
+  tokenSigningAlg: "RS256",
 });
 
-const s3 = new AWS.S3();
+// Middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Replace with your frontend URL
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Authorization,Content-Type",
+  })
+);
+app.use(bodyParser.json());
+app.use(jwtCheck);
+
+// Enable preflight requests for all routes
+app.options("*", cors());
+
+// Debugging middleware to log the token
+app.use((req, res, next) => {
+  console.log("Authorization Header:", req.headers.authorization);
+  next();
+});
+
+// Routes
+app.get("/authorized", function (req, res) {
+  res.send("Secured Resource");
+});
+
+// Configure AWS SDK v3
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 // Configure Multer to use S3 for storage
 const upload = multer({
   storage: multerS3({
-    s3: s3,
+    s3: s3Client,
     bucket: process.env.S3_BUCKET_NAME,
     acl: "public-read",
     key: function (req, file, cb) {
@@ -34,68 +64,104 @@ const upload = multer({
   }),
 });
 
-// Sample news data
-let newsPosts = [
-  {
-    id: 1,
-    title: "First News",
-    content: "This is the first news content.",
-    uploadDate: new Date().toISOString(),
-    link: "http://example.com",
-  },
-  {
-    id: 2,
-    title: "Second News",
-    content: "This is the second news content.",
-    uploadDate: new Date().toISOString(),
-    link: "http://example.com",
-  },
-];
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Define a schema and model for news posts
+const newsPostSchema = new mongoose.Schema({
+  title: String,
+  content: String,
+  uploadDate: { type: Date, default: Date.now },
+  link: String,
+  imageUrl: String,
+});
+
+const NewsPost = mongoose.model("NewsPost", newsPostSchema);
+
+// Define a schema and model for Spotify embeds
+const spotifyEmbedSchema = new mongoose.Schema({
+  embedUrl: String,
+});
+
+const SpotifyEmbed = mongoose.model("SpotifyEmbed", spotifyEmbedSchema);
 
 // Routes
-app.get("/api/news", (req, res) => {
-  res.json(newsPosts);
-});
-
-app.post("/api/news", (req, res) => {
-  const newPost = {
-    id: newsPosts.length + 1,
-    title: req.body.title,
-    content: req.body.content,
-    uploadDate: new Date().toISOString(),
-    link: req.body.link, // Save the link
-  };
-  newsPosts.push(newPost);
-  res.status(201).json(newPost);
-});
-
-app.put("/api/news/:id", (req, res) => {
-  const postId = parseInt(req.params.id, 10);
-  const postIndex = newsPosts.findIndex((post) => post.id === postId);
-
-  if (postIndex !== -1) {
-    newsPosts[postIndex] = {
-      ...newsPosts[postIndex],
-      title: req.body.title,
-      content: req.body.content,
-      uploadDate: new Date().toISOString(), // Update the upload date
-      link: req.body.link, // Update the link
-    };
-    res.json(newsPosts[postIndex]);
-  } else {
-    res.status(404).json({ message: "Post not found" });
+app.get("/api/news", async (req, res) => {
+  try {
+    const newsPosts = await NewsPost.find();
+    res.json(newsPosts);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching news posts" });
   }
 });
 
-app.delete("/api/news/:id", (req, res) => {
-  const postId = parseInt(req.params.id, 10);
-  const postIndex = newsPosts.findIndex((post) => post.id === postId);
+app.post("/api/news", async (req, res) => {
+  try {
+    const newPost = new NewsPost(req.body);
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({ message: "Error saving news post" });
+  }
+});
 
-  if (postIndex !== -1) {
-    const deletedPost = newsPosts.splice(postIndex, 1);
-    res.json(deletedPost[0]);
-  } else {
-    res.status(404).json({ message: "Post not found" });
+app.put("/api/news/:id", async (req, res) => {
+  try {
+    const updatedPost = await NewsPost.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating news post" });
+  }
+});
+
+app.delete("/api/news/:id", async (req, res) => {
+  try {
+    const deletedPost = await NewsPost.findByIdAndDelete(req.params.id);
+    if (!deletedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json(deletedPost);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting news post" });
+  }
+});
+
+// Spotify embed route
+app.get("/api/spotify", async (req, res) => {
+  try {
+    const spotifyEmbeds = await SpotifyEmbed.find()
+      .sort({ uploadDate: -1 })
+      .limit(5);
+    if (spotifyEmbeds.length === 0) {
+      return res.status(200).json({ message: "No Spotify embeds found" });
+    }
+    res.json(spotifyEmbeds);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching Spotify embeds" });
+  }
+});
+
+app.get("/api/spotify", (req, res) => {
+  const embedCode = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5V1tlGEIQhVIwLYHTdRaFq?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+  res.json({ embedCode });
+});
+
+app.delete("/api/spotify/:id", async (req, res) => {
+  try {
+    const deletedEmbed = await SpotifyEmbed.findByIdAndDelete(req.params.id);
+    if (!deletedEmbed) {
+      return res.status(404).json({ message: "Embed not found" });
+    }
+    res.json(deletedEmbed);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting Spotify embed" });
   }
 });
 
@@ -107,6 +173,6 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
   res.status(201).json({ imageUrl: req.file.location });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
