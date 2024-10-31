@@ -1,0 +1,41 @@
+.news-content img{
+    width: 50vw;
+}
+.css-480o17-MuiGrid-root>.MuiGrid-item {
+    background-image: url("https://res.cloudinary.com/djunroohl/image/upload/v1729350618/Instagram_dlgcl0.png");
+    z-index: 999 !important;
+}
+
+.css-dvxtzn {
+    flex-direction: row !important;
+    justify-content: space-between;
+}
+svg{
+    width: 70px;
+}
+
+
+@media screen and (max-width: 425px){
+    .css-75uvui-MuiButtonGroup-root {
+        display: -webkit-inline-box;
+        display: -webkit-inline-flex;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        border-radius: 4px;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        flex-wrap: wrap;
+    }
+    .title-input{
+        width: 100vw;
+        height: 4vh;
+        font-size: large;
+        font-weight: bolder;
+    }
+    svg{
+        width: 50px;
+    }
+    .css-dvxtzn {
+        flex-direction: row !important;
+        justify-content: space-between;
+    }
+}

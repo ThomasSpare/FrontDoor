@@ -1,0 +1,143 @@
+h1 {
+    font-size: 6rem;
+    font-family: Rubik Mono One, monospace;
+        font-weight: 400;
+        font-style: normal;
+}
+
+.news-h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.editor{
+    background-color: antiquewhite;
+    border: 1px solid rgb(204, 204, 204);
+    min-height: 200px;
+    padding: 10px;
+    border-color: #252817;
+    border-width: thick;
+    border-radius: 9px;
+}
+
+#news {
+    padding-left: 30vw !important;
+    padding-right: 2vw;
+}
+
+#releases{
+    padding-right: 1vw;
+}
+
+.main-editor-div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;  
+        background-color: firebrick; 
+}
+
+.banner-image{
+        height: 79vw;
+        margin-right: 20vw;
+    }
+
+.banner-container {
+    position: relative;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+}
+
+.banner-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 1; /* Adjust the opacity to make the video more subtle */
+}
+
+.banner-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.logo {
+    height: 37vh;
+    position: absolute;
+    bottom: 0vh;
+    right: 16vw;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.vds-audio-layout.light, .light .vds-audio-layout{
+--default-brand: rgb(239 0 0) !important;
+--default-color: rgb(208 208 208)   !important;
+--default-bg: rgb(0 0 0) !important;
+--default-controls-color: rgb(255 255 255) !important;
+--default-border: 1px solid rgb(100 100 100 /0.2)   !important;
+--default-slider-track-bg: rgb(50 50 50 / 32%) !important;
+--default-slider-progress-bg: rgb(10 10 10 / 0.2) !important;
+}
+
+.social-media-links{
+    display: flex;
+    flex-direction: column;
+}
+
+.svg-inline--fa {
+    display: var(--fa-display, inline-block);
+    height: 3em;
+    overflow: visible;
+    vertical-align: -0.125em;
+    color: black;
+}
+
+@media screen and (max-width: 768px) {
+        .logo {
+            height: 21vh;
+            position: absolute;
+            bottom: 15vh;
+            right: 28vw;
+        }    
+        .banner-image {
+                height: 79vw;
+                margin-right: 20vw;
+                margin-top: 97px;       
+        }       
+}
+
+@media screen and (max-width: 425px) {
+    .logo {
+        height: 15vh;
+        position: relative;
+        top: 0px;
+        right: 156vw;
+        margin-bottom: 67vh;
+        }
+        .banner-image {
+        height: 82vh;
+        margin-left: 79vw;
+        }
+        .main-editor-div h1 {
+        font-size: 2rem;
+        text-align: center;
+        }      
+}
+    
+
+
