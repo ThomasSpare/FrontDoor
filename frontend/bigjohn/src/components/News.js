@@ -22,19 +22,24 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 
 function News() {
-  const { getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [spotifyEmbeds, setSpotifyEmbeds] = useState([]);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchSpotifyEmbeds = async () => {
       try {
-        const token = await getAccessTokenSilently();
-        const response = await axios.get("http://localhost:8080/api/spotify", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        let response;
+        if (isAuthenticated) {
+          const token = await getAccessTokenSilently();
+          response = await axios.get("http://localhost:8080/api/spotify", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } else {
+          response = await axios.get("http://localhost:8080/api/spotify");
+        }
         setSpotifyEmbeds(response.data);
       } catch (error) {
         console.error("Error fetching Spotify embeds:", error);
@@ -42,17 +47,22 @@ function News() {
     };
 
     fetchSpotifyEmbeds();
-  }, [getAccessTokenSilently]);
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const token = await getAccessTokenSilently();
-        const response = await axios.get("http://localhost:8080/api/news", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        let response;
+        if (isAuthenticated) {
+          const token = await getAccessTokenSilently();
+          response = await axios.get("http://localhost:8080/api/news", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } else {
+          response = await axios.get("http://localhost:8080/api/news");
+        }
         const sortedPosts = response.data.sort(
           (a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)
         );
@@ -63,7 +73,7 @@ function News() {
     };
 
     fetchPosts();
-  }, [getAccessTokenSilently]);
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const renderContent = (rawContent) => {
     try {

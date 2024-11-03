@@ -57,7 +57,6 @@ const upload = multer({
   storage: multerS3({
     s3: s3Client,
     bucket: process.env.S3_BUCKET_NAME,
-    acl: "public-read",
     key: function (req, file, cb) {
       cb(null, Date.now().toString() + "-" + file.originalname);
     },
@@ -87,6 +86,21 @@ const spotifyEmbedSchema = new mongoose.Schema({
 });
 
 const SpotifyEmbed = mongoose.model("SpotifyEmbed", spotifyEmbedSchema);
+
+// Define a schema and model for VIP content
+const vipContentSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  mediaUrl: {
+    imageUrl: String,
+    videoUrl: String,
+    audioUrl: String,
+  },
+  mediaType: String, // 'image', 'audio', 'video', 'mixed'
+  uploadDate: { type: Date, default: Date.now },
+});
+
+const VipContent = mongoose.model("VipContent", vipContentSchema);
 
 // Routes
 app.get("/api/news", async (req, res) => {
@@ -133,7 +147,7 @@ app.delete("/api/news/:id", async (req, res) => {
   }
 });
 
-// Spotify embed route
+// Spotify embed routes
 app.get("/api/spotify", async (req, res) => {
   try {
     const spotifyEmbeds = await SpotifyEmbed.find()
@@ -148,9 +162,14 @@ app.get("/api/spotify", async (req, res) => {
   }
 });
 
-app.get("/api/spotify", (req, res) => {
-  const embedCode = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5V1tlGEIQhVIwLYHTdRaFq?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
-  res.json({ embedCode });
+app.post("/api/spotify", async (req, res) => {
+  try {
+    const newEmbed = new SpotifyEmbed(req.body);
+    await newEmbed.save();
+    res.status(201).json(newEmbed);
+  } catch (error) {
+    res.status(500).json({ message: "Error saving Spotify embed" });
+  }
 });
 
 app.delete("/api/spotify/:id", async (req, res) => {
@@ -164,6 +183,57 @@ app.delete("/api/spotify/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting Spotify embed" });
   }
 });
+
+// VIP content routes
+app.get("/api/vip", async (req, res) => {
+  try {
+    const vipContent = await VipContent.find();
+    res.json(vipContent);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching VIP content" });
+  }
+});
+
+app.delete("/api/vip/:id", async (req, res) => {
+  try {
+    const deletedVipContent = await VipContent.findByIdAndDelete(req.params.id);
+    if (!deletedVipContent) {
+      return res.status(404).json({ message: "VIP content not found" });
+    }
+    res.json(deletedVipContent);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting VIP content" });
+  }
+});
+
+app.post(
+  "/api/vip",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+    { name: "audio", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const { title, description } = req.body;
+    const imageUrl = req.files.image ? req.files.image[0].location : null;
+    const videoUrl = req.files.video ? req.files.video[0].location : null;
+    const audioUrl = req.files.audio ? req.files.audio[0].location : null;
+
+    const vipContent = new VipContent({
+      title,
+      description,
+      mediaUrl: { imageUrl, videoUrl, audioUrl },
+      mediaType: "mixed",
+    });
+
+    try {
+      await vipContent.save();
+      res.status(201).json(vipContent);
+    } catch (error) {
+      res.status(500).json({ message: "Error saving VIP content" });
+    }
+  }
+);
 
 // Image upload route
 app.post("/api/upload", upload.single("image"), (req, res) => {

@@ -6,32 +6,41 @@ import {
   DefaultAudioLayout,
   defaultLayoutIcons,
 } from "@vidstack/react/player/layouts/default";
-import { Button, Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography, Card, CardContent } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
+import { convertFromRaw } from "draft-js";
+import { stateToHTML } from "draft-js-export-html";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const VipArea = () => {
-  const [audioPlaylist, setAudioPlaylist] = useState([]);
-  const [videoPlaylist, setVideoPlaylist] = useState([]);
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [posts, setPosts] = useState([]);
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
     fetchVipContent();
-  }, []);
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const fetchVipContent = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/vip");
-      const audioContent = response.data.filter(
-        (content) => content.mediaType === "audio"
+      let response;
+      if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        response = await axios.get("http://localhost:8080/api/vip", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        response = await axios.get("http://localhost:8080/api/vip");
+      }
+      const sortedPosts = response.data.sort(
+        (a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)
       );
-      const videoContent = response.data.filter(
-        (content) => content.mediaType === "video"
-      );
-      setAudioPlaylist(audioContent);
-      setVideoPlaylist(videoContent);
+      setPosts(sortedPosts);
     } catch (error) {
       console.error("Error fetching VIP content:", error);
     }
@@ -39,73 +48,115 @@ const VipArea = () => {
 
   const handleNextAudio = () => {
     setCurrentAudioIndex((prevIndex) =>
-      prevIndex === audioPlaylist.length - 1 ? 0 : prevIndex + 1
+      prevIndex === posts.filter((post) => post.mediaUrl.audioUrl).length - 1
+        ? 0
+        : prevIndex + 1
     );
   };
 
   const handlePreviousAudio = () => {
     setCurrentAudioIndex((prevIndex) =>
-      prevIndex === 0 ? audioPlaylist.length - 1 : prevIndex - 1
+      prevIndex === 0
+        ? posts.filter((post) => post.mediaUrl.audioUrl).length - 1
+        : prevIndex - 1
     );
   };
 
   const handleNextVideo = () => {
     setCurrentVideoIndex((prevIndex) =>
-      prevIndex === videoPlaylist.length - 1 ? 0 : prevIndex + 1
+      prevIndex === posts.filter((post) => post.mediaUrl.videoUrl).length - 1
+        ? 0
+        : prevIndex + 1
     );
   };
 
   const handlePreviousVideo = () => {
     setCurrentVideoIndex((prevIndex) =>
-      prevIndex === 0 ? videoPlaylist.length - 1 : prevIndex - 1
+      prevIndex === 0
+        ? posts.filter((post) => post.mediaUrl.videoUrl).length - 1
+        : prevIndex - 1
     );
+  };
+
+  const renderContent = (rawContent) => {
+    try {
+      const contentState = convertFromRaw(JSON.parse(rawContent));
+      return stateToHTML(contentState);
+    } catch (error) {
+      console.error("Failed to parse content:", error);
+      return "<p>Invalid content</p>";
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   return (
     <div>
       <h1>VIP Area</h1>
-
-      <div>
-        <h2>Music Player</h2>
-        {audioPlaylist.length > 0 && (
-          <MediaPlayer
-            title={audioPlaylist[currentAudioIndex].title}
-            src={audioPlaylist[currentAudioIndex].mediaUrl}
-          >
-            <MediaProvider />
-            <DefaultAudioLayout icons={defaultLayoutIcons} />
-          </MediaPlayer>
-        )}
-        <Box display="flex" justifyContent="center" mt={2}>
-          <IconButton onClick={handlePreviousAudio}>
-            <ArrowBackIcon />
-          </IconButton>
-          <IconButton onClick={handleNextAudio}>
-            <ArrowForwardIcon />
-          </IconButton>
-        </Box>
-      </div>
-
-      <div>
-        <h2>Video Player</h2>
-        {videoPlaylist.length > 0 && (
-          <MediaPlayer
-            title={videoPlaylist[currentVideoIndex].title}
-            src={videoPlaylist[currentVideoIndex].mediaUrl}
-          >
-            <MediaProvider />
-            <DefaultAudioLayout icons={defaultLayoutIcons} />
-          </MediaPlayer>
-        )}
-        <Box display="flex" justifyContent="center" mt={2}>
-          <IconButton onClick={handlePreviousVideo}>
-            <ArrowBackIcon />
-          </IconButton>
-          <IconButton onClick={handleNextVideo}>
-            <ArrowForwardIcon />
-          </IconButton>
-        </Box>
-      </div>
+      {posts.map((post) => (
+        <Card key={post._id} sx={{ marginBottom: 2 }}>
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              {formatDate(post.uploadDate)}
+            </Typography>
+            <Typography variant="h5" component="h2" gutterBottom>
+              {post.title}
+            </Typography>
+            {post.description && (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: renderContent(post.description),
+                }}
+              />
+            )}
+            {post.mediaUrl.imageUrl && (
+              <img
+                src={post.mediaUrl.imageUrl}
+                alt={post.title}
+                style={{ width: "100%" }}
+              />
+            )}
+            {post.mediaUrl.audioUrl && (
+              <div>
+                <MediaPlayer title={post.title} src={post.mediaUrl.audioUrl}>
+                  <MediaProvider />
+                  <DefaultAudioLayout icons={defaultLayoutIcons} />
+                </MediaPlayer>
+                <Box display="flex" justifyContent="center" mt={2}>
+                  <IconButton onClick={handlePreviousAudio}>
+                    <ArrowBackIcon />
+                  </IconButton>
+                  <IconButton onClick={handleNextAudio}>
+                    <ArrowForwardIcon />
+                  </IconButton>
+                </Box>
+              </div>
+            )}
+            {post.mediaUrl.videoUrl && (
+              <div>
+                <MediaPlayer
+                  title={post.title}
+                  src={post.mediaUrl.videoUrl}
+                  controls
+                >
+                  <MediaProvider />
+                </MediaPlayer>
+                <Box display="flex" justifyContent="center" mt={2}>
+                  <IconButton onClick={handlePreviousVideo}>
+                    <ArrowBackIcon />
+                  </IconButton>
+                  <IconButton onClick={handleNextVideo}>
+                    <ArrowForwardIcon />
+                  </IconButton>
+                </Box>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };

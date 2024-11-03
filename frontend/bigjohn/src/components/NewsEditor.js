@@ -5,7 +5,6 @@ import {
   RichUtils,
   convertToRaw,
   convertFromRaw,
-  Modifier,
   AtomicBlockUtils,
   CompositeDecorator,
 } from "draft-js";
@@ -20,6 +19,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useAuth0 } from "@auth0/auth0-react";
+import { TextareaAutosize } from "@mui/material";
+import "./NewsEditor.css";
 
 const findLinkEntities = (contentBlock, callback, contentState) => {
   contentBlock.findEntityRanges((character) => {
@@ -47,15 +48,19 @@ const decorator = new CompositeDecorator([
   },
 ]);
 
-const NewsEditor = ({ setUploadedImageUrl }) => {
+const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty(decorator)
   );
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedAudio, setSelectedAudio] = useState(null);
   const [title, setTitle] = useState("");
   const [posts, setPosts] = useState([]);
   const [editingPostId, setEditingPostId] = useState(null);
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [vipPosts, setVipPosts] = useState([]); // State for VIP posts
   const [link, setLink] = useState("");
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -63,7 +68,11 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [spotifyEmbedUrl, setSpotifyEmbedUrl] = useState("");
   const [spotifyEmbeds, setSpotifyEmbeds] = useState([]); // Ensure initial state is an array
-  const [imageHeadline, setImageHeadline] = useState(""); // State for image headline
+  const [description, setDescription] = useState(""); // State for description
+
+  useEffect(() => {
+    fetchVipPosts();
+  }, []);
 
   useEffect(() => {
     fetchPosts();
@@ -98,6 +107,20 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
       setSpotifyEmbeds(response.data);
     } catch (error) {
       console.error("Error fetching Spotify embeds:", error);
+    }
+  };
+
+  const fetchVipPosts = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await axios.get("http://localhost:8080/api/vip", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setVipPosts(response.data);
+    } catch (error) {
+      console.error("Error fetching VIP posts:", error);
     }
   };
 
@@ -174,6 +197,27 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
     }
   };
 
+  const handleVipEdit = (post) => {
+    setTitle(post.title);
+    setDescription(post.description);
+    setSelectedFile(null);
+  };
+
+  const handleVipDelete = async (postId) => {
+    try {
+      const token = await getAccessTokenSilently();
+      await axios.delete(`http://localhost:8080/api/vip/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("VIP post deleted!");
+      fetchVipPosts(); // Fetch the updated list of VIP posts
+    } catch (error) {
+      console.error("There was an error deleting the VIP post!", error);
+    }
+  };
+
   const handleKeyCommand = (command) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
@@ -244,6 +288,18 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
     setEditorState(newEditorState);
     setImageDialogOpen(false);
     setImageUrl("");
+  };
+
+  const handleImageChange = (e) => {
+    setSelectedImage(e.target.files[0]);
+  };
+
+  const handleVideoChange = (e) => {
+    setSelectedVideo(e.target.files[0]);
+  };
+
+  const handleAudioChange = (e) => {
+    setSelectedAudio(e.target.files[0]);
   };
 
   const promptForUpload = () => {
@@ -322,24 +378,66 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
     }
   };
 
-  const handleImageHeadlineChange = (e) => {
-    setImageHeadline(e.target.value);
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
   };
 
-  const handleImageFormSubmit = (e) => {
+  const handleImageFormSubmit = async (e) => {
     e.preventDefault();
-    uploadImage();
-    // Handle the headline as needed, e.g., save it to the backend
-    console.log("Image Headline:", imageHeadline);
+
+    const contentState = editorState.getCurrentContent();
+    const rawContent = JSON.stringify(convertToRaw(contentState));
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", rawContent);
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
+    if (selectedVideo) {
+      formData.append("video", selectedVideo);
+    }
+    if (selectedAudio) {
+      formData.append("audio", selectedAudio);
+    }
+
+    try {
+      const token = await getAccessTokenSilently();
+      await axios.post("http://localhost:8080/api/vip", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      alert("VIP content uploaded successfully!");
+      setUploadedImageUrl("");
+      setTitle("");
+      setDescription("");
+      setSelectedImage(null);
+      setSelectedVideo(null);
+      setSelectedAudio(null);
+      fetchVipPosts(); // Fetch the updated list of VIP posts
+    } catch (error) {
+      console.error("There was an error uploading the VIP content!", error);
+    }
   };
 
   return (
     <div className="main-editor-div">
       <h1>News Editor</h1>
+      <i className="fas fa-newspaper" style={{ width: "50px" }}></i>
+      <h2>Front Page Editor</h2>
       <input
         className="title-input"
         type="text"
         placeholder="Title"
+        style={{
+          marginBottom: "10px",
+          width: "30vw",
+          height: "30px",
+          fontSize: "20px",
+          fontFamily: "Gloria Hallelujah, cursive",
+        }}
         value={title}
         onChange={handleTitleChange}
       />
@@ -371,10 +469,15 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
         </ButtonGroup>
         <div
           className="editor"
+          placeholder="Write something..."
           style={{
             border: "1px solid #ccc",
             minHeight: "200px",
             padding: "10px",
+            fontSize: "30px",
+            fontWeight: "400",
+            fontStyle: "normal",
+            fontFamily: "Gloria Hallelujah, cursive",
           }}
         >
           <Editor
@@ -387,67 +490,141 @@ const NewsEditor = ({ setUploadedImageUrl }) => {
           {editingPostId ? "Update" : "Save"}
         </Button>
       </div>
-      <h2>Last 5 News</h2>
+      <h2>Your Last 5 News Posts</h2>
       <ul>
         {posts.map((post) => (
           <li key={post._id}>
             <h3>{post.title}</h3>
             <Button
               variant="contained"
-              color="secondary"
+              style={{ backgroundColor: "#4b9f4b" }}
               onClick={() => handleEdit(post)}
             >
               Edit
             </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => handleDelete(post._id)} // Use _id instead of id
-            >
+            <Button variant="contained" color="error">
               Delete
             </Button>
           </li>
         ))}
       </ul>
 
-      <h2>Spotify Embed</h2>
-      <TextField
-        label="Spotify Embed URL"
-        value={spotifyEmbedUrl}
-        onChange={handleSpotifyEmbedChange}
-        fullWidth
-      />
-      <Button variant="contained" color="primary" onClick={saveSpotifyEmbed}>
-        Save Spotify Embed
-      </Button>
-
-      <h2>Last 5 Spotify Embeds</h2>
-      {Array.isArray(spotifyEmbeds) &&
-        spotifyEmbeds.map((embed) => (
-          <div key={embed._id}>
-            <div dangerouslySetInnerHTML={{ __html: embed.embedUrl }} />
-            <Button
-              color="warning"
-              onClick={() => handleSpotifyDelete(embed._id)}
-            >
-              Delete
-            </Button>
-          </div>
-        ))}
-
-      <h2>Upload Image and Set Headline</h2>
-      <form onSubmit={handleImageFormSubmit}>
+      <div style={{ marginTop: "20px" }}>
+        <h2>Spotify Embed</h2>
         <TextField
-          label="Image Headline"
-          value={imageHeadline}
-          onChange={handleImageHeadlineChange}
+          label="Spotify Embed URL"
+          value={spotifyEmbedUrl}
+          onChange={handleSpotifyEmbedChange}
           fullWidth
+          style={{ backgroundColor: "white" }}
         />
-        <input type="file" onChange={handleFileChange} />
-        <Button type="submit" variant="contained" color="primary">
-          Upload Image
+        <Button variant="contained" color="primary" onClick={saveSpotifyEmbed}>
+          Save Spotify Embed
         </Button>
-      </form>
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        <h2>Last 5 Spotify Embeds</h2>
+        {Array.isArray(spotifyEmbeds) &&
+          spotifyEmbeds.map((embed) => (
+            <div key={embed._id} style={{ marginBottom: "10px" }}>
+              <div dangerouslySetInnerHTML={{ __html: embed.embedUrl }} />
+              <Button
+                color="warning"
+                onClick={() => handleSpotifyDelete(embed._id)}
+              >
+                Delete
+              </Button>
+            </div>
+          ))}
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        <h2>VIP AREA Editor</h2>
+        <form onSubmit={handleImageFormSubmit}>
+          <TextField
+            label="Title"
+            value={title}
+            onChange={handleTitleChange}
+            fullWidth
+            InputProps={{
+              style: {
+                backgroundColor: "white",
+                fontFamily: "Gloria Hallelujah, cursive",
+                fontSize: "30px",
+                fontWeight: "400",
+                fontStyle: "normal",
+              },
+            }}
+          />
+          <TextareaAutosize
+            placeholder="Write something..."
+            value={description}
+            onChange={handleDescriptionChange}
+            style={{
+              width: "100%",
+              marginTop: "10px",
+              padding: "10px",
+              fontFamily: "Gloria Hallelujah, cursive",
+              fontSize: "30px",
+              fontWeight: "400",
+              fontStyle: "normal",
+            }}
+            minRows={5}
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ marginTop: "10px" }}
+          />
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleVideoChange}
+            style={{ marginTop: "10px" }}
+          />
+          <input
+            type="file"
+            accept="audio/*"
+            onChange={handleAudioChange}
+            style={{ marginTop: "10px" }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "10px" }}
+          >
+            Upload Image, Video, and Audio
+          </Button>
+        </form>
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        <h2>VIP Posts</h2>
+        <ul>
+          {vipPosts.map((post) => (
+            <li key={post._id} style={{ marginBottom: "10px" }}>
+              <h3>{post.title}</h3>
+              <Button
+                variant="contained"
+                onClick={() => handleVipEdit(post)}
+                style={{ marginRight: "10px", backgroundColor: "#4b9f4b" }}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleVipDelete(post._id)}
+              >
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Link Dialog */}
       <Dialog open={linkDialogOpen} onClose={() => setLinkDialogOpen(false)}>

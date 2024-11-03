@@ -21,8 +21,20 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VipArea from "./pages/VipArea";
 
+if (typeof ResizeObserver !== "undefined") {
+  const resizeObserverLoopErrRe = /^ResizeObserver loop limit exceeded/;
+
+  const originalError = console.error;
+  console.error = (...args) => {
+    if (args[0] && resizeObserverLoopErrRe.test(args[0])) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+}
+
 function App() {
-  const { getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [spotifyEmbed, setSpotifyEmbed] = useState(null);
 
@@ -40,24 +52,34 @@ function App() {
   useEffect(() => {
     const fetchSpotifyEmbed = async () => {
       try {
-        const token = await getAccessTokenSilently();
-        const response = await fetch("http://localhost:8080/api/spotify", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        let response;
+        if (isAuthenticated) {
+          const token = await getAccessTokenSilently();
+          response = await fetch("http://localhost:8080/api/spotify", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } else {
+          response = await fetch("http://localhost:8080/api/spotify");
+        }
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setSpotifyEmbed(data);
+        // Sort the Spotify embeds by uploadDate in descending order
+        const sortedData = data.sort(
+          (a, b) =>
+            new Date(a.uploadDate).getTime() - new Date(b.uploadDate).getTime()
+        );
+        setSpotifyEmbed(sortedData[0]);
       } catch (error) {
         console.error("Error fetching Spotify embed:", error);
       }
     };
 
     fetchSpotifyEmbed();
-  }, [getAccessTokenSilently]);
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const handleNextTrack = () => {
     setCurrentTrackIndex((prevIndex) =>
