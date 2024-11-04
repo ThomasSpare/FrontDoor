@@ -32,12 +32,6 @@ app.use(jwtCheck);
 // Enable preflight requests for all routes
 app.options("*", cors());
 
-// Debugging middleware to log the token
-app.use((req, res, next) => {
-  console.log("Authorization Header:", req.headers.authorization);
-  next();
-});
-
 // Routes
 app.get("/authorized", function (req, res) {
   res.send("Secured Resource");
@@ -57,10 +51,6 @@ const upload = multer({
   storage: multerS3({
     s3: s3Client,
     bucket: process.env.S3_BUCKET_NAME,
-<<<<<<< HEAD
-=======
-    acl: "public-read",
->>>>>>> 07b51f022717e30284a2d948075eb32c6e142738
     key: function (req, file, cb) {
       cb(null, Date.now().toString() + "-" + file.originalname);
     },
@@ -91,7 +81,6 @@ const spotifyEmbedSchema = new mongoose.Schema({
 
 const SpotifyEmbed = mongoose.model("SpotifyEmbed", spotifyEmbedSchema);
 
-<<<<<<< HEAD
 // Define a schema and model for VIP content
 const vipContentSchema = new mongoose.Schema({
   title: String,
@@ -107,8 +96,6 @@ const vipContentSchema = new mongoose.Schema({
 
 const VipContent = mongoose.model("VipContent", vipContentSchema);
 
-=======
->>>>>>> 07b51f022717e30284a2d948075eb32c6e142738
 // Routes
 app.get("/api/news", async (req, res) => {
   try {
@@ -154,11 +141,7 @@ app.delete("/api/news/:id", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-// Spotify embed routes
-=======
 // Spotify embed route
->>>>>>> 07b51f022717e30284a2d948075eb32c6e142738
 app.get("/api/spotify", async (req, res) => {
   try {
     const spotifyEmbeds = await SpotifyEmbed.find()
@@ -173,7 +156,6 @@ app.get("/api/spotify", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 app.post("/api/spotify", async (req, res) => {
   try {
     const newEmbed = new SpotifyEmbed(req.body);
@@ -182,11 +164,10 @@ app.post("/api/spotify", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error saving Spotify embed" });
   }
-=======
+});
 app.get("/api/spotify", (req, res) => {
   const embedCode = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5V1tlGEIQhVIwLYHTdRaFq?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
   res.json({ embedCode });
->>>>>>> 07b51f022717e30284a2d948075eb32c6e142738
 });
 
 app.delete("/api/spotify/:id", async (req, res) => {
@@ -201,7 +182,6 @@ app.delete("/api/spotify/:id", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 // VIP content routes
 app.get("/api/vip", async (req, res) => {
   try {
@@ -253,8 +233,6 @@ app.post(
   }
 );
 
-=======
->>>>>>> 07b51f022717e30284a2d948075eb32c6e142738
 // Image upload route
 app.post("/api/upload", upload.single("image"), (req, res) => {
   if (!req.file) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Card from "@mui/material/Card";
 import {
   Editor,
   EditorState,
@@ -8,6 +9,7 @@ import {
   AtomicBlockUtils,
   CompositeDecorator,
 } from "draft-js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "draft-js/dist/Draft.css";
 import axios from "axios";
 import AWS from "aws-sdk";
@@ -131,7 +133,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
-
+  // The Newseditor submission handler
   const handleSave = async () => {
     const contentState = editorState.getCurrentContent();
     const rawContent = JSON.stringify(convertToRaw(contentState));
@@ -183,6 +185,11 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   };
 
   const handleDelete = async (postId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this news post?"
+    );
+    if (!confirmDelete) return;
+
     try {
       const token = await getAccessTokenSilently();
       await axios.delete(`http://localhost:8080/api/news/${postId}`, {
@@ -204,6 +211,11 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   };
 
   const handleVipDelete = async (postId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this VIP post?"
+    );
+    if (!confirmDelete) return;
+
     try {
       const token = await getAccessTokenSilently();
       await axios.delete(`http://localhost:8080/api/vip/${postId}`, {
@@ -382,15 +394,13 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
     setDescription(e.target.value);
   };
 
+  // The VIP form submission handler
   const handleImageFormSubmit = async (e) => {
     e.preventDefault();
 
-    const contentState = editorState.getCurrentContent();
-    const rawContent = JSON.stringify(convertToRaw(contentState));
-
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("description", rawContent);
+    formData.append("description", description); // Save description as plain text
     if (selectedImage) {
       formData.append("image", selectedImage);
     }
@@ -424,92 +434,131 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
   return (
     <div className="main-editor-div">
-      <h1>News Editor</h1>
-      <i className="fas fa-newspaper" style={{ width: "50px" }}></i>
-      <h2>Front Page Editor</h2>
-      <input
-        className="title-input"
-        type="text"
-        placeholder="Title"
-        style={{
-          marginBottom: "10px",
-          width: "30vw",
-          height: "30px",
-          fontSize: "20px",
-          fontFamily: "Gloria Hallelujah, cursive",
-        }}
-        value={title}
-        onChange={handleTitleChange}
-      />
-      <div className="Editor-main">
-        <ButtonGroup
-          variant="contained"
-          aria-label="outlined primary button group"
-        >
-          <Button onClick={() => toggleInlineStyle("BOLD")}>Bold</Button>
-          <Button onClick={() => toggleInlineStyle("ITALIC")}>Italic</Button>
-          <Button onClick={() => toggleInlineStyle("UNDERLINE")}>
-            Underline
-          </Button>
-          <Button onClick={() => toggleBlockType("header-one")}>H1</Button>
-          <Button onClick={() => toggleBlockType("header-two")}>H2</Button>
-          <Button onClick={() => toggleBlockType("unordered-list-item")}>
-            UL
-          </Button>
-          <Button onClick={() => toggleBlockType("ordered-list-item")}>
-            OL
-          </Button>
-          <Button onClick={() => toggleBlockType("blockquote")}>
-            Blockquote
-          </Button>
-          <Button onClick={promptForLink}>Add Link</Button>
-          <Button onClick={promptForImage}>Add Image</Button>
-          <Button onClick={promptForUpload}>Upload Image</Button>
-          <Button onClick={resetEditor}>Clear</Button>
-        </ButtonGroup>
-        <div
-          className="editor"
-          placeholder="Write something..."
-          style={{
-            border: "1px solid #ccc",
-            minHeight: "200px",
-            padding: "10px",
-            fontSize: "30px",
-            fontWeight: "400",
-            fontStyle: "normal",
-            fontFamily: "Gloria Hallelujah, cursive",
+      <h1 style={{ margin: "14px !important" }}>News Editor</h1>
+      <h2 style={{ color: "white", margin: "14px !important" }}>
+        Front Page Editor
+      </h2>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
+        <h3>Front Page Post Title</h3>
+        <TextField
+          label="Title"
+          value={title}
+          onChange={handleTitleChange}
+          fullWidth
+          InputProps={{
+            style: {
+              backgroundColor: "white",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "30px",
+              fontWeight: "400",
+              fontStyle: "normal",
+            },
           }}
-        >
-          <Editor
-            editorState={editorState}
-            handleKeyCommand={handleKeyCommand}
-            onChange={handleEditorChange}
-          />
+        />
+      </Card>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
+        <h3>Front Page Text Editor</h3>
+        <div className="Editor-main">
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+          >
+            <Button onClick={() => toggleInlineStyle("BOLD")}>Bold</Button>
+            <Button onClick={() => toggleInlineStyle("ITALIC")}>Italic</Button>
+            <Button onClick={() => toggleInlineStyle("UNDERLINE")}>
+              Underline
+            </Button>
+            <Button onClick={() => toggleBlockType("header-one")}>H1</Button>
+            <Button onClick={() => toggleBlockType("header-two")}>H2</Button>
+            <Button onClick={() => toggleBlockType("unordered-list-item")}>
+              UL
+            </Button>
+            <Button onClick={() => toggleBlockType("ordered-list-item")}>
+              OL
+            </Button>
+            <Button onClick={() => toggleBlockType("blockquote")}>
+              Blockquote
+            </Button>
+            <Button onClick={promptForLink}>Add Link</Button>
+            <Button onClick={promptForImage}>Add Image</Button>
+            <Button onClick={promptForUpload}>Upload Image</Button>
+            <Button onClick={resetEditor}>Clear</Button>
+          </ButtonGroup>
+          <div
+            className="editor"
+            placeholder="Write something..."
+            style={{
+              border: "1px solid #ccc",
+              minHeight: "200px",
+              padding: "10px",
+              fontSize: "30px",
+              fontWeight: "400",
+              fontStyle: "normal",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <Editor
+              editorState={editorState}
+              handleKeyCommand={handleKeyCommand}
+              onChange={handleEditorChange}
+            />
+          </div>
+          <Button variant="contained" color="primary" onClick={handleSave}>
+            {editingPostId ? "Update" : "Save Frontpage Post"}
+          </Button>
         </div>
-        <Button variant="contained" color="primary" onClick={handleSave}>
-          {editingPostId ? "Update" : "Save"}
-        </Button>
-      </div>
-      <h2>Your Last 5 News Posts</h2>
-      <ul>
-        {posts.map((post) => (
-          <li key={post._id}>
-            <h3>{post.title}</h3>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: "#4b9f4b" }}
-              onClick={() => handleEdit(post)}
-            >
-              Edit
-            </Button>
-            <Button variant="contained" color="error">
-              Delete
-            </Button>
-          </li>
-        ))}
-      </ul>
-
-      <div style={{ marginTop: "20px" }}>
+      </Card>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
+        <h2>Your Last 5 News Posts</h2>
+        <ul>
+          {posts
+            .sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate))
+            .map((post) => (
+              <li
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                }}
+                key={post._id}
+              >
+                <h3 style={{ flex: 1 }}>{post.title}</h3>
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: "#4b9f4b", marginRight: "10px" }}
+                  onClick={() => handleEdit(post)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleDelete(post._id)}
+                >
+                  Delete
+                </Button>
+              </li>
+            ))}
+        </ul>
+      </Card>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
         <h2>Spotify Embed</h2>
         <TextField
           label="Spotify Embed URL"
@@ -521,26 +570,41 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
         <Button variant="contained" color="primary" onClick={saveSpotifyEmbed}>
           Save Spotify Embed
         </Button>
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
+      </Card>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
         <h2>Last 5 Spotify Embeds</h2>
         {Array.isArray(spotifyEmbeds) &&
-          spotifyEmbeds.map((embed) => (
-            <div key={embed._id} style={{ marginBottom: "10px" }}>
-              <div dangerouslySetInnerHTML={{ __html: embed.embedUrl }} />
-              <Button
-                color="warning"
-                onClick={() => handleSpotifyDelete(embed._id)}
-              >
-                Delete
-              </Button>
-            </div>
-          ))}
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
+          spotifyEmbeds
+            .sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate))
+            .map((embed) => (
+              <div key={embed._id} style={{ marginBottom: "10px" }}>
+                <div dangerouslySetInnerHTML={{ __html: embed.embedUrl }} />
+                <Button
+                  color="warning"
+                  onClick={() => handleSpotifyDelete(embed._id)}
+                >
+                  Delete
+                </Button>
+              </div>
+            ))}
+      </Card>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{
+          padding: "20px",
+          marginTop: "100px",
+          marginBottom: "10px",
+          width: "60vw",
+        }}
+      >
+        {" "}
         <h2>VIP AREA Editor</h2>
+        <FontAwesomeIcon icon="fa-solid fa-square-pen" />
         <form onSubmit={handleImageFormSubmit}>
           <TextField
             label="Title"
@@ -550,7 +614,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
             InputProps={{
               style: {
                 backgroundColor: "white",
-                fontFamily: "Gloria Hallelujah, cursive",
+                fontFamily: "Poppins, sans-serif",
                 fontSize: "30px",
                 fontWeight: "400",
                 fontStyle: "normal",
@@ -565,67 +629,121 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
               width: "100%",
               marginTop: "10px",
               padding: "10px",
-              fontFamily: "Gloria Hallelujah, cursive",
+              fontFamily: "Poppins, sans-serif",
               fontSize: "30px",
               fontWeight: "400",
               fontStyle: "normal",
             }}
             minRows={5}
           />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ marginTop: "10px" }}
-          />
-          <input
-            type="file"
-            accept="video/*"
-            onChange={handleVideoChange}
-            style={{ marginTop: "10px" }}
-          />
-          <input
-            type="file"
-            accept="audio/*"
-            onChange={handleAudioChange}
-            style={{ marginTop: "10px" }}
-          />
+          <Card
+            className="card"
+            variant="outlined"
+            style={{ padding: "20px", marginTop: "20px" }}
+          >
+            <p
+              style={{
+                fontFamily: "Rubik Mono One, monospace",
+                color: "rgb(137, 137, 137)",
+              }}
+            >
+              Upload Image
+            </p>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ marginTop: "10px" }}
+            />
+          </Card>
+          <Card
+            className="card"
+            variant="outlined"
+            style={{ padding: "20px", marginTop: "20px" }}
+          >
+            <p
+              style={{
+                fontFamily: "Rubik Mono One, monospace",
+                color: "rgb(137, 137, 137)",
+              }}
+            >
+              Upload Video
+            </p>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleVideoChange}
+              style={{ marginTop: "10px" }}
+            />
+          </Card>
+          <Card
+            className="card"
+            variant="outlined"
+            style={{ padding: "20px", marginTop: "20px" }}
+          >
+            <p
+              style={{
+                fontFamily: "Rubik Mono One, monospace",
+                color: "rgb(137, 137, 137)",
+              }}
+            >
+              Upload Audio
+            </p>
+            <input
+              type="file"
+              accept="audio/*"
+              onChange={handleAudioChange}
+              style={{ marginTop: "10px" }}
+            />
+          </Card>
           <Button
             type="submit"
             variant="contained"
             color="primary"
             style={{ marginTop: "10px" }}
           >
-            Upload Image, Video, and Audio
+            Upload VIP Content
           </Button>
         </form>
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
+      </Card>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
         <h2>VIP Posts</h2>
         <ul>
-          {vipPosts.map((post) => (
-            <li key={post._id} style={{ marginBottom: "10px" }}>
-              <h3>{post.title}</h3>
-              <Button
-                variant="contained"
-                onClick={() => handleVipEdit(post)}
-                style={{ marginRight: "10px", backgroundColor: "#4b9f4b" }}
+          {vipPosts
+            .sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate))
+            .map((post) => (
+              <li
+                key={post._id}
+                style={{
+                  marginBottom: "10px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
               >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleVipDelete(post._id)}
-              >
-                Delete
-              </Button>
-            </li>
-          ))}
+                <h3 style={{ flex: 1 }}>{post.title}</h3>
+                <Button
+                  variant="contained"
+                  onClick={() => handleVipEdit(post)}
+                  style={{ marginRight: "10px", backgroundColor: "#4b9f4b" }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleVipDelete(post._id)}
+                >
+                  Delete
+                </Button>
+              </li>
+            ))}
         </ul>
-      </div>
-
+      </Card>
       {/* Link Dialog */}
       <Dialog open={linkDialogOpen} onClose={() => setLinkDialogOpen(false)}>
         <DialogTitle>Add Link</DialogTitle>
@@ -649,7 +767,6 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* Image Dialog */}
       <Dialog open={imageDialogOpen} onClose={() => setImageDialogOpen(false)}>
         <DialogTitle>Add Image</DialogTitle>
@@ -673,7 +790,6 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* Upload Dialog */}
       <Dialog
         open={uploadDialogOpen}

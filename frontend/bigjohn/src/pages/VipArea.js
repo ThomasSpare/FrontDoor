@@ -10,9 +10,8 @@ import { Box, IconButton, Typography, Card, CardContent } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
-import { convertFromRaw } from "draft-js";
-import { stateToHTML } from "draft-js-export-html";
 import { useAuth0 } from "@auth0/auth0-react";
+import "./VipArea.css";
 
 const VipArea = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -78,16 +77,6 @@ const VipArea = () => {
     );
   };
 
-  const renderContent = (rawContent) => {
-    try {
-      const contentState = convertFromRaw(JSON.parse(rawContent));
-      return stateToHTML(contentState);
-    } catch (error) {
-      console.error("Failed to parse content:", error);
-      return "<p>Invalid content</p>";
-    }
-  };
-
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -106,11 +95,9 @@ const VipArea = () => {
               {post.title}
             </Typography>
             {post.description && (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: renderContent(post.description),
-                }}
-              />
+              <Typography variant="body1" component="p">
+                {post.description}
+              </Typography>
             )}
             {post.mediaUrl.imageUrl && (
               <img

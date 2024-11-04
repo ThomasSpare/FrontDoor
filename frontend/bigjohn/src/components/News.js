@@ -99,7 +99,7 @@ function News() {
               </Typography>
               {post.imageUrl && (
                 <img
-                  style={{ width: "10vw" }}
+                  style={{ width: "33vw" }}
                   src={post.imageUrl}
                   alt={post.title}
                 />

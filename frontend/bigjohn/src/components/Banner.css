@@ -1,15 +1,31 @@
+body{
+    background-color: #0d0d0d;
+}
+
 h1 {
     font-size: 6rem;
     font-family: Rubik Mono One, monospace;
         font-weight: 400;
         font-style: normal;
+        color: rgb(36, 36, 36);
+
 }
 
 h2 {
     font-size: 3rem;
     font-family: Rubik Mono One, monospace;
-        font-weight: 400;
+    font-weight: 400;
+    font-style: normal;
+    color: rgb(137, 137, 137);
+}
+
+h3 {
+    font-size: 1rem;
+    font-family: Rubik Mono One, monospace;
+        font-weight: 100;
         font-style: normal;
+        color: rgb(108, 108, 108);
+
 }
 
 .news-h1 {
@@ -28,8 +44,8 @@ h2 {
 }
 
 #news {
-    padding-left: 30vw !important;
-    padding-right: 2vw;
+    padding-left: 22vw !important;
+    padding-right: 10vw;
 }
 
 #releases{
@@ -114,6 +130,28 @@ h2 {
     color: black;
 }
 
+/* News content Front Page */
+.css-480o17-MuiGrid-root {
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: 100%;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    margin-top: 0px;
+    width: calc(100% + 32px);
+    align-items: flex-start;
+    align-content: center;
+    width: 100% !important;
+}
+
 @media screen and (max-width: 768px) {
         .logo {
             height: 21vh;
@@ -125,15 +163,68 @@ h2 {
                 height: 79vw;
                 margin-right: 20vw;
                 margin-top: 97px;       
-        }       
-}
+        } 
+        #root > div > div{
+            width: -webkit-fill-available;
+        } 
+        h2{
+            font-size: 1rem;
+            margin-bottom: 14px;
+        } 
+        p{
+            font-size: 15px;
+        } 
+        textarea {
+            font-size: 15px !important;
+        }
+        .editor{
+            font-size: 15px !important;
+        }
+        input{
+            font-size: 15px !important;
+        }
+        .css-480o17-MuiGrid-root {
+            box-sizing: border-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-flex-wrap: wrap;
+            -webkit-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            flex-direction: column;
+            margin-top: 0px;
+            align-items: center;
+            align-content: center;
+            width: 100% !important;
+        }
+        #news {
+            padding-left: 2vw !important;
+            padding-right: 2vw;
+            min-width: 100%;
+        }
+        .css-1g5qvo6 {
+            -webkit-align-items: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: space-evenly;
+            -ms-flex-pack: space-evenly;
+            -webkit-justify-content: space-evenly;
+            margin-top: 49px;
+            margin-bottom: 43px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    }
 
 @media screen and (max-width: 425px) {
     .logo {
         height: 15vh;
         position: relative;
-        top: 0px;
-        right: 156vw;
+        top: 50px;
+        right: 145vw;
         margin-bottom: 67vh;
         }
         .banner-image {

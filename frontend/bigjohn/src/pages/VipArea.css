@@ -1,0 +1,13 @@
+body {
+background-image: url('https://res.cloudinary.com/djunroohl/image/upload/v1730754650/mixerboard_tcirv1.jpg');
+background-size: cover;
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-position: center;
+}
+
+img {
+    padding: 10vw;
+    border-radius: 30px;
+    border: 8px solid #00000040;
+}

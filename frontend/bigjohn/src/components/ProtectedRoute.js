@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NewsEditor from "./NewsEditor"; // Ensure correct import
+import "./ProtectedRoute.css";
 
 const ProtectedRoute = ({ element: Component, ...rest }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,7 +21,7 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   return isAuthenticated ? (
     <NewsEditor {...rest} />
   ) : (
-    <div>
+    <div className="password_div">
       <h2>Password Protected</h2>
       <input
         type="password"
@@ -28,7 +29,9 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
         value={password}
         onChange={handlePasswordChange}
       />
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin} style={{ width: "16vw", marginTop: "2vh" }}>
+        Login
+      </button>
     </div>
   );
 };

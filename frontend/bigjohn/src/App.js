@@ -108,16 +108,22 @@ function App() {
             </MediaPlayer>
             <Box display="flex" justifyContent="center" mt={2}>
               <IconButton
+                icons={defaultLayoutIcons}
+                iconsSize="XL"
+                style={{ color: "red" }}
                 onClick={handlePreviousTrack}
                 disabled={currentTrackIndex === 0}
               >
-                <ArrowBackIcon />
+                <ArrowBackIcon size={32} />
               </IconButton>
               <IconButton
+                icons={defaultLayoutIcons}
+                iconsSize="XL"
+                style={{ color: "red" }}
                 onClick={handleNextTrack}
                 disabled={currentTrackIndex === playlist.length - 1}
               >
-                <ArrowForwardIcon />
+                <ArrowForwardIcon size={32} />
               </IconButton>
             </Box>
             <Banner
@@ -125,7 +131,15 @@ function App() {
               backgroundVideo={videoUrl}
             />
             <AuthButtons />
-            <h1 style={{ fontSize: "2rem", textAlign: "center" }}>
+            <h1
+              style={{
+                fontSize: "2rem",
+                textAlign: "center",
+                marginTop: "0px",
+                marginBottom: "4vh",
+                color: "aliceblue",
+              }}
+            >
               Register to get VIP access to unreleased music
             </h1>
             <News />

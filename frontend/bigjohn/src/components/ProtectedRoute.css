@@ -1,0 +1,12 @@
+.password_div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: firebrick;
+    border: 1px solid rgb(204, 204, 204);
+    min-height: 200px;
+    padding: 10px;
+    border-color: #252817;
+    border-width: thick;
+    border-radius: 9px;
+}
