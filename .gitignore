@@ -2,6 +2,8 @@
 node_modules/
 frontend/bigjohn/node_modules/
 backend/node_modules/
+frontend/bigjohn/node_modules/.cache/default-development/
+FrontDoor.git/objects/pack/
 
 # Ignore log files
 *.log
