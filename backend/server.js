@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 require("dotenv").config(); // Load environment variables
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 10000;
 
 const jwtCheck = auth({
   audience: process.env.AUTH0_AUDIENCE,
