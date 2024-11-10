@@ -16,7 +16,6 @@ build/
 .env
 frontend/bigjohn/.env
 backend/.env
-/frontend/bigjohn/src/auth_config.json
 
 # Ignore mirror files
 FrontDoor.git
