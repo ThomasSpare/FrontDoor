@@ -10,7 +10,7 @@ import {
 import { convertFromRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import {
-  Grid,
+  Grid2,
   Card,
   CardContent,
   Typography,
@@ -88,8 +88,8 @@ function News() {
   };
 
   return (
-    <Grid container spacing={4}>
-      <Grid id="news" item xs={6} md={8}>
+    <Grid2 container spacing={4}>
+      <Grid2 id="news" item xs={6} md={8}>
         <Typography variant="h1" component="h1" gutterBottom>
           News
         </Typography>
@@ -122,8 +122,8 @@ function News() {
             </CardContent>
           </Card>
         ))}
-      </Grid>
-      <Grid id="releases" item xs={6} md={4}>
+      </Grid2>
+      <Grid2 id="releases" item xs={6} md={4}>
         <Box
           display="flex"
           flexDirection="row"
@@ -186,8 +186,8 @@ function News() {
               dangerouslySetInnerHTML={{ __html: embed.embedUrl }}
             />
           ))}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }
 
