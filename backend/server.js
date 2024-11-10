@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { auth } = require("express-oauth2-jwt-bearer");
@@ -93,7 +94,7 @@ const vipContentSchema = new mongoose.Schema({
 
 const VipContent = mongoose.model("VipContent", vipContentSchema);
 
-// Routes
+// API Routes
 app.get("/api/news", async (req, res) => {
   try {
     const newsPosts = await NewsPost.find();
@@ -236,6 +237,14 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
   res.status(201).json({ imageUrl: req.file.location });
+});
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, "frontend/bigjohn/build")));
+
+// The "catchall" handler: for any request that doesn't match one above, send back index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/bigjohn/build", "index.html"));
 });
 
 app.listen(port, () => {

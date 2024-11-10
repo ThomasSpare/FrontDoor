@@ -17,9 +17,6 @@ build/
 frontend/bigjohn/.env
 backend/.env
 
-# Ignore mirror files
-FrontDoor.git
-
 # Ignore OS generated files
 .DS_Store
 Thumbs.db
