@@ -24,6 +24,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { TextareaAutosize } from "@mui/material";
 import "./NewsEditor.css";
 
+const BackendUrl = process.env.REACT_APP_BACKENDURL;
+
 const findLinkEntities = (contentBlock, callback, contentState) => {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
@@ -84,7 +86,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const fetchPosts = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get("http://localhost:8080/api/news", {
+      const response = await axios.get(`${BackendUrl}/api/news`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -101,7 +103,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const fetchSpotifyEmbeds = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get("http://localhost:8080/api/spotify", {
+      const response = await axios.get(`${BackendUrl}/api/spotify`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -115,7 +117,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const fetchVipPosts = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get("http://localhost:8080/api/vip", {
+      const response = await axios.get(`${BackendUrl}/api/vip`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -147,18 +149,14 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
     try {
       const token = await getAccessTokenSilently();
       if (editingPostId) {
-        await axios.put(
-          `http://localhost:8080/api/news/${editingPostId}`,
-          postData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await axios.put(`${BackendUrl}/api/news/${editingPostId}`, postData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         alert("News post updated!");
       } else {
-        await axios.post("http://localhost:8080/api/news", postData, {
+        await axios.post(`${BackendUrl}/api/news`, postData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -192,7 +190,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.delete(`http://localhost:8080/api/news/${postId}`, {
+      await axios.delete(`${BackendUrl}/api/news/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -218,7 +216,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.delete(`http://localhost:8080/api/vip/${postId}`, {
+      await axios.delete(`${BackendUrl}/api/vip/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -359,7 +357,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
     try {
       const token = await getAccessTokenSilently();
       await axios.post(
-        "http://localhost:8080/api/spotify",
+        `${BackendUrl}/api/spotify`,
         { embedUrl: spotifyEmbedUrl },
         {
           headers: {
@@ -378,7 +376,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const handleSpotifyDelete = async (_id) => {
     try {
       const token = await getAccessTokenSilently();
-      await axios.delete(`http://localhost:8080/api/spotify/${_id}`, {
+      await axios.delete(`${BackendUrl}/api/spotify/${_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -413,7 +411,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.post("http://localhost:8080/api/vip", formData, {
+      await axios.post(`${BackendUrl}/api/vip`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

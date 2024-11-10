@@ -11,7 +11,7 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   };
 
   const handleLogin = () => {
-    if (password === "BigJohn") {
+    if (password === process.env.REACT_APP_PROTECTED_PASSWORD) {
       setIsAuthenticated(true);
     } else {
       alert("Incorrect password");

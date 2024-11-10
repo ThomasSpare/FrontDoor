@@ -21,18 +21,6 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VipArea from "./pages/VipArea";
 
-if (typeof ResizeObserver !== "undefined") {
-  const resizeObserverLoopErrRe = /^ResizeObserver loop limit exceeded/;
-
-  const originalError = console.error;
-  console.error = (...args) => {
-    if (args[0] && resizeObserverLoopErrRe.test(args[0])) {
-      return;
-    }
-    originalError.call(console, ...args);
-  };
-}
-
 function App() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
@@ -47,6 +35,8 @@ function App() {
     { title: "Song 3", src: "/assets/song3.mp3" },
   ];
 
+  const BackendUrl = process.env.REACT_APP_BACKENDURL;
+
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
   useEffect(() => {
@@ -55,13 +45,13 @@ function App() {
         let response;
         if (isAuthenticated) {
           const token = await getAccessTokenSilently();
-          response = await fetch("http://localhost:8080/api/spotify", {
+          response = await fetch(`${BackendUrl}/api/spotify`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
         } else {
-          response = await fetch("http://localhost:8080/api/spotify");
+          response = await fetch(`${BackendUrl}/api/spotify`);
         }
         if (!response.ok) {
           throw new Error("Network response was not ok");

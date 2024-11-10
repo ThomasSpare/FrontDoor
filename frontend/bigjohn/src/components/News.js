@@ -21,6 +21,8 @@ import "./News.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 
+const BackendUrl = process.env.REACT_APP_BACKENDURL;
+
 function News() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [spotifyEmbeds, setSpotifyEmbeds] = useState([]);
@@ -32,13 +34,13 @@ function News() {
         let response;
         if (isAuthenticated) {
           const token = await getAccessTokenSilently();
-          response = await axios.get("http://localhost:8080/api/spotify", {
+          response = await axios.get(`${BackendUrl}/api/spotify`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
         } else {
-          response = await axios.get("http://localhost:8080/api/spotify");
+          response = await axios.get(`${BackendUrl}/api/spotify`);
         }
         setSpotifyEmbeds(response.data);
       } catch (error) {
@@ -55,13 +57,13 @@ function News() {
         let response;
         if (isAuthenticated) {
           const token = await getAccessTokenSilently();
-          response = await axios.get("http://localhost:8080/api/news", {
+          response = await axios.get(`${BackendUrl}/api/news`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
         } else {
-          response = await axios.get("http://localhost:8080/api/news");
+          response = await axios.get(`${BackendUrl}/api/news`);
         }
         const sortedPosts = response.data.sort(
           (a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)

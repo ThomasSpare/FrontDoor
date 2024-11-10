@@ -13,6 +13,8 @@ import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./VipArea.css";
 
+const BackendUrl = process.env.REACT_APP_BACKENDURL;
+
 const VipArea = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [posts, setPosts] = useState([]);
@@ -28,13 +30,13 @@ const VipArea = () => {
       let response;
       if (isAuthenticated) {
         const token = await getAccessTokenSilently();
-        response = await axios.get("http://localhost:8080/api/vip", {
+        response = await axios.get(`${BackendUrl}/api/vip`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       } else {
-        response = await axios.get("http://localhost:8080/api/vip");
+        response = await axios.get(`${BackendUrl}/api/vip`);
       }
       const sortedPosts = response.data.sort(
         (a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)
