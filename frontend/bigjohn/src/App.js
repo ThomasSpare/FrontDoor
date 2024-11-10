@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import News from "./components/News";
 import Banner from "./components/Banner";
@@ -84,81 +84,85 @@ function App() {
   };
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <>
-            <MediaPlayer
-              title={playlist[currentTrackIndex].title}
-              src={playlist[currentTrackIndex].src}
-            >
-              <MediaProvider />
-              <DefaultAudioLayout icons={defaultLayoutIcons} />
-            </MediaPlayer>
-            <Box display="flex" justifyContent="center" mt={2}>
-              <IconButton
-                icons={defaultLayoutIcons}
-                iconsSize="XL"
-                style={{ color: "red" }}
-                onClick={handlePreviousTrack}
-                disabled={currentTrackIndex === 0}
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <MediaPlayer
+                title={playlist[currentTrackIndex].title}
+                src={playlist[currentTrackIndex].src}
               >
-                <ArrowBackIcon size={32} />
-              </IconButton>
-              <IconButton
-                icons={defaultLayoutIcons}
-                iconsSize="XL"
-                style={{ color: "red" }}
-                onClick={handleNextTrack}
-                disabled={currentTrackIndex === playlist.length - 1}
-              >
-                <ArrowForwardIcon size={32} />
-              </IconButton>
-            </Box>
-            <Banner
-              backgroundImage={backgroundImage}
-              backgroundVideo={videoUrl}
-            />
-            <AuthButtons />
-            <h1
-              style={{
-                fontSize: "2rem",
-                textAlign: "center",
-                marginTop: "0px",
-                marginBottom: "4vh",
-                color: "aliceblue",
-              }}
-            >
-              Register to get VIP access to unreleased music
-            </h1>
-            <News />
-            {uploadedImageUrl && <img src={uploadedImageUrl} alt="Uploaded" />}
-            {spotifyEmbed && (
-              <div
-                dangerouslySetInnerHTML={{ __html: spotifyEmbed.embedCode }}
+                <MediaProvider />
+                <DefaultAudioLayout icons={defaultLayoutIcons} />
+              </MediaPlayer>
+              <Box display="flex" justifyContent="center" mt={2}>
+                <IconButton
+                  icons={defaultLayoutIcons}
+                  iconsSize="XL"
+                  style={{ color: "red" }}
+                  onClick={handlePreviousTrack}
+                  disabled={currentTrackIndex === 0}
+                >
+                  <ArrowBackIcon size={32} />
+                </IconButton>
+                <IconButton
+                  icons={defaultLayoutIcons}
+                  iconsSize="XL"
+                  style={{ color: "red" }}
+                  onClick={handleNextTrack}
+                  disabled={currentTrackIndex === playlist.length - 1}
+                >
+                  <ArrowForwardIcon size={32} />
+                </IconButton>
+              </Box>
+              <Banner
+                backgroundImage={backgroundImage}
+                backgroundVideo={videoUrl}
               />
-            )}
-          </>
-        }
-      />
-      <Route
-        path="/vip"
-        element={
-          <VipProtectedRoute>
-            <VipArea />
-          </VipProtectedRoute>
-        }
-      />
-      <Route
-        path="/johns-news"
-        element={
-          <ProtectedRoute>
-            <NewsEditor setUploadedImageUrl={setUploadedImageUrl} />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+              <AuthButtons />
+              <h1
+                style={{
+                  fontSize: "2rem",
+                  textAlign: "center",
+                  marginTop: "0px",
+                  marginBottom: "4vh",
+                  color: "aliceblue",
+                }}
+              >
+                Register to get VIP access to unreleased music
+              </h1>
+              <News />
+              {uploadedImageUrl && (
+                <img src={uploadedImageUrl} alt="Uploaded" />
+              )}
+              {spotifyEmbed && (
+                <div
+                  dangerouslySetInnerHTML={{ __html: spotifyEmbed.embedCode }}
+                />
+              )}
+            </>
+          }
+        />
+        <Route
+          path="/vip"
+          element={
+            <VipProtectedRoute>
+              <VipArea />
+            </VipProtectedRoute>
+          }
+        />
+        <Route
+          path="/johns-news"
+          element={
+            <ProtectedRoute>
+              <NewsEditor setUploadedImageUrl={setUploadedImageUrl} />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
