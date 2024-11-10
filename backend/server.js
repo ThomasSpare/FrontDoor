@@ -21,8 +21,8 @@ const jwtCheck = auth({
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // Replace with your frontend URL
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
     allowedHeaders: "Authorization,Content-Type",
   })
 );
