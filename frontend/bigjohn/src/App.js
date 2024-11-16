@@ -45,13 +45,13 @@ function App() {
         let response;
         if (isAuthenticated) {
           const token = await getAccessTokenSilently();
-          response = await fetch(`https://${BackendUrl}/api/spotify`, {
+          response = await fetch(`${BackendUrl}/api/spotify`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
         } else {
-          response = await fetch(`https://${BackendUrl}/api/spotify`);
+          response = await fetch(`${BackendUrl}/api/spotify`);
         }
         if (!response.ok) {
           throw new Error("Network response was not ok");
