@@ -13,21 +13,52 @@ require("dotenv").config(); // Load environment variables
 const app = express();
 const port = process.env.PORT || 10000;
 
-const jwtCheck = auth({
-  audience: process.env.AUTH0_AUDIENCE,
-  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
-  tokenSigningAlg: "RS256",
-});
-
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+    origin: "https://frontend-bigjohn.onrender.com", // Replace with your frontend URL
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
     allowedHeaders: "Authorization,Content-Type",
   })
 );
 app.use(bodyParser.json());
+
+// Function to get access token from Auth0
+const getAccessToken = () => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      method: "POST",
+      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        client_id: process.env.AUTH0_CLIENT_ID,
+        client_secret: process.env.AUTH0_CLIENT_SECRET,
+        audience: process.env.AUTH0_AUDIENCE,
+        grant_type: "client_credentials",
+      }),
+    };
+
+    request(options, (error, response, body) => {
+      if (error) {
+        return reject(error);
+      }
+      const data = JSON.parse(body);
+      resolve(data.access_token);
+    });
+  });
+};
+
+// Middleware to check JWT token
+const jwtCheck = async (req, res, next) => {
+  try {
+    const token = await getAccessToken();
+    req.headers.authorization = `Bearer ${token}`;
+    next();
+  } catch (error) {
+    res.status(500).json({ message: "Error obtaining access token" });
+  }
+};
+
 app.use(jwtCheck);
 
 // Enable preflight requests for all routes
