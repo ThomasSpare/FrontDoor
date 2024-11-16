@@ -57,12 +57,17 @@ function App() {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        // Sort the Spotify embeds by uploadDate in descending order
-        const sortedData = data.sort(
-          (a, b) =>
-            new Date(a.uploadDate).getTime() - new Date(b.uploadDate).getTime()
-        );
-        setSpotifyEmbed(sortedData[0]);
+        if (Array.isArray(data)) {
+          // Sort the Spotify embeds by uploadDate in descending order
+          const sortedData = data.sort(
+            (a, b) =>
+              new Date(a.uploadDate).getTime() -
+              new Date(b.uploadDate).getTime()
+          );
+          setSpotifyEmbed(sortedData[0]);
+        } else {
+          console.error("Expected an array but got:", data);
+        }
       } catch (error) {
         console.error("Error fetching Spotify embed:", error);
       }
