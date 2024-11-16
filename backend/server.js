@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { auth } = require("express-oauth2-jwt-bearer");
+const request = require("request");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const multer = require("multer");
@@ -16,7 +16,7 @@ const port = process.env.PORT || 10000;
 // Middleware
 app.use(
   cors({
-    origin: "https://frontend-bigjohn.onrender.com", // Replace with your frontend URL
+    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
     allowedHeaders: "Authorization,Content-Type",
   })
@@ -28,7 +28,7 @@ const getAccessToken = () => {
   return new Promise((resolve, reject) => {
     const options = {
       method: "POST",
-      url: `${process.env.AUTH0_DOMAIN}/oauth/token`,
+      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         client_id: process.env.AUTH0_CLIENT_ID,
