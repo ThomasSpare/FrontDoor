@@ -28,7 +28,7 @@ const getAccessToken = () => {
   return new Promise((resolve, reject) => {
     const options = {
       method: "POST",
-      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      url: `${process.env.AUTH0_DOMAIN}/oauth/token`,
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         client_id: process.env.AUTH0_CLIENT_ID,
