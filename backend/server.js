@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const request = require("request");
+const axios = require("axios");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const multer = require("multer");
@@ -24,28 +24,24 @@ app.use(
 app.use(bodyParser.json());
 
 // Function to get access token from Auth0
-const getAccessToken = () => {
-  return new Promise((resolve, reject) => {
-    const options = {
-      method: "POST",
-      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
+const getAccessToken = async () => {
+  try {
+    const response = await axios.post(
+      `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      {
         client_id: process.env.AUTH0_CLIENT_ID,
         client_secret: process.env.AUTH0_CLIENT_SECRET,
         audience: process.env.AUTH0_AUDIENCE,
         grant_type: "client_credentials",
-      }),
-    };
-
-    request(options, (error, response, body) => {
-      if (error) {
-        return reject(error);
+      },
+      {
+        headers: { "content-type": "application/json" },
       }
-      const data = JSON.parse(body);
-      resolve(data.access_token);
-    });
-  });
+    );
+    return response.data.access_token;
+  } catch (error) {
+    throw new Error("Error obtaining access token");
+  }
 };
 
 // Middleware to check JWT token
