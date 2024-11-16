@@ -86,7 +86,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const fetchPosts = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get(`${BackendUrl}/api/news`, {
+      const response = await axios.get(`https://${BackendUrl}/api/news`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,7 +103,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const fetchSpotifyEmbeds = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get(`${BackendUrl}/api/spotify`, {
+      const response = await axios.get(`https://${BackendUrl}/api/spotify`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -117,7 +117,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const fetchVipPosts = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get(`${BackendUrl}/api/vip`, {
+      const response = await axios.get(`https://${BackendUrl}/api/vip`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -149,14 +149,18 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
     try {
       const token = await getAccessTokenSilently();
       if (editingPostId) {
-        await axios.put(`${BackendUrl}/api/news/${editingPostId}`, postData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.put(
+          `https://${BackendUrl}/api/news/${editingPostId}`,
+          postData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         alert("News post updated!");
       } else {
-        await axios.post(`${BackendUrl}/api/news`, postData, {
+        await axios.post(`https://${BackendUrl}/api/news`, postData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -190,7 +194,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.delete(`${BackendUrl}/api/news/${postId}`, {
+      await axios.delete(`https://${BackendUrl}/api/news/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -216,7 +220,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.delete(`${BackendUrl}/api/vip/${postId}`, {
+      await axios.delete(`https://${BackendUrl}/api/vip/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -357,7 +361,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
     try {
       const token = await getAccessTokenSilently();
       await axios.post(
-        `${BackendUrl}/api/spotify`,
+        `https://${BackendUrl}/api/spotify`,
         { embedUrl: spotifyEmbedUrl },
         {
           headers: {
@@ -376,7 +380,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const handleSpotifyDelete = async (_id) => {
     try {
       const token = await getAccessTokenSilently();
-      await axios.delete(`${BackendUrl}/api/spotify/${_id}`, {
+      await axios.delete(`https://${BackendUrl}/api/spotify/${_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -411,7 +415,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.post(`${BackendUrl}/api/vip`, formData, {
+      await axios.post(`https://${BackendUrl}/api/vip`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
