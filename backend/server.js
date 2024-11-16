@@ -40,6 +40,7 @@ const getAccessToken = async () => {
     );
     return response.data.access_token;
   } catch (error) {
+    console.error("Error obtaining access token:", error);
     throw new Error("Error obtaining access token");
   }
 };
@@ -51,6 +52,7 @@ const jwtCheck = async (req, res, next) => {
     req.headers.authorization = `Bearer ${token}`;
     next();
   } catch (error) {
+    console.error("Error in jwtCheck middleware:", error);
     res.status(500).json({ message: "Error obtaining access token" });
   }
 };
@@ -86,7 +88,13 @@ const upload = multer({
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI);
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("Error connecting to MongoDB:", error));
 
 // Define a schema and model for news posts
 const newsPostSchema = new mongoose.Schema({
@@ -127,6 +135,7 @@ app.get("/api/news", async (req, res) => {
     const newsPosts = await NewsPost.find();
     res.json(newsPosts);
   } catch (error) {
+    console.error("Error fetching news posts:", error);
     res.status(500).json({ message: "Error fetching news posts" });
   }
 });
@@ -137,6 +146,7 @@ app.post("/api/news", async (req, res) => {
     await newPost.save();
     res.status(201).json(newPost);
   } catch (error) {
+    console.error("Error saving news post:", error);
     res.status(500).json({ message: "Error saving news post" });
   }
 });
@@ -150,6 +160,7 @@ app.put("/api/news/:id", async (req, res) => {
     );
     res.json(updatedPost);
   } catch (error) {
+    console.error("Error updating news post:", error);
     res.status(500).json({ message: "Error updating news post" });
   }
 });
@@ -162,6 +173,7 @@ app.delete("/api/news/:id", async (req, res) => {
     }
     res.json(deletedPost);
   } catch (error) {
+    console.error("Error deleting news post:", error);
     res.status(500).json({ message: "Error deleting news post" });
   }
 });
@@ -177,6 +189,7 @@ app.get("/api/spotify", async (req, res) => {
     }
     res.json(spotifyEmbeds);
   } catch (error) {
+    console.error("Error fetching Spotify embeds:", error);
     res.status(500).json({ message: "Error fetching Spotify embeds" });
   }
 });
@@ -187,6 +200,7 @@ app.post("/api/spotify", async (req, res) => {
     await newEmbed.save();
     res.status(201).json(newEmbed);
   } catch (error) {
+    console.error("Error saving Spotify embed:", error);
     res.status(500).json({ message: "Error saving Spotify embed" });
   }
 });
@@ -203,6 +217,7 @@ app.delete("/api/spotify/:id", async (req, res) => {
     }
     res.json(deletedEmbed);
   } catch (error) {
+    console.error("Error deleting Spotify embed:", error);
     res.status(500).json({ message: "Error deleting Spotify embed" });
   }
 });
@@ -213,6 +228,7 @@ app.get("/api/vip", async (req, res) => {
     const vipContent = await VipContent.find();
     res.json(vipContent);
   } catch (error) {
+    console.error("Error fetching VIP content:", error);
     res.status(500).json({ message: "Error fetching VIP content" });
   }
 });
@@ -225,6 +241,7 @@ app.delete("/api/vip/:id", async (req, res) => {
     }
     res.json(deletedVipContent);
   } catch (error) {
+    console.error("Error deleting VIP content:", error);
     res.status(500).json({ message: "Error deleting VIP content" });
   }
 });
@@ -253,6 +270,7 @@ app.post(
       await vipContent.save();
       res.status(201).json(vipContent);
     } catch (error) {
+      console.error("Error saving VIP content:", error);
       res.status(500).json({ message: "Error saving VIP content" });
     }
   }
@@ -267,11 +285,11 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
 });
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, "frontend/bigjohn/build")));
+app.use(express.static(path.join(__dirname, "../frontend/bigjohn/build")));
 
 // The "catchall" handler: for any request that doesn't match one above, send back index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/bigjohn/build", "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/bigjohn/build", "index.html"));
 });
 
 app.listen(port, () => {
