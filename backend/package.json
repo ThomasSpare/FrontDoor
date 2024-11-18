@@ -14,10 +14,7 @@
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0"
   },
-  "scripts": {
-    "start": "node server.js",
-    "install-frontend": "cd ../frontend/bigjohn && npm install",
-    "build-frontend": "cd ../frontend/bigjohn && npm run build",
-    "deploy": "npm install && npm run install-frontend && npm run build-frontend"
-  }
+"scripts": {
+  "start": "node server.js"
+}
 }
