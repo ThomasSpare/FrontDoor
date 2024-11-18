@@ -22,6 +22,33 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+// Serve static files from the React app
+app.use(express.static(buildPath));
+
+const currentDir = __dirname;
+const buildPath = path.resolve(__dirname, "../frontend/bigjohn/build");
+
+console.log("Current directory:", currentDir);
+console.log("Looking for build at:", buildPath);
+
+// Check if build directory exists
+if (!fs.existsSync(buildPath)) {
+  console.error(`Build directory not found at: ${buildPath}`);
+}
+
+// The "catchall" handler
+app.get("*", (req, res) => {
+  const indexPath = path.join(buildPath, "index.html");
+
+  if (!fs.existsSync(indexPath)) {
+    console.error(`index.html not found at: ${indexPath}`);
+    return res
+      .status(404)
+      .send(`Build files not found. Looked in: ${indexPath}`);
+  }
+
+  res.sendFile(indexPath);
+});
 
 // Function to get access token from Auth0
 const getAccessToken = async () => {
