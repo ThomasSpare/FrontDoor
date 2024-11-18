@@ -13,6 +13,8 @@ require("dotenv").config(); // Load environment variables
 
 const app = express();
 const port = process.env.PORT || 10000;
+const currentDir = __dirname;
+const buildPath = path.resolve(__dirname, "build");
 
 // Middleware
 app.use(
@@ -287,9 +289,6 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
 
 // Serve static files from the React app
 app.use(express.static(buildPath));
-
-const currentDir = __dirname;
-const buildPath = path.resolve(__dirname, "../frontend/bigjohn/build");
 
 console.log("Current directory:", currentDir);
 console.log("Looking for build at:", buildPath);
