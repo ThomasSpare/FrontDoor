@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInstagram,
   faSpotify,
-  faFacebook,
   faXTwitter,
   faYoutube,
   faSoundcloud,
@@ -156,7 +155,7 @@ function News() {
           </IconButton>
           <IconButton
             component="a"
-            href="https://www.threads.net/@bigjohnmuzik?xmt=AQGzEI5k2GoyeZuBWXk31jlbLgg_5EUXXbSIAvxJeQpZWc8"
+            href="https://soundcloud.com/big-john-192594714"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
@@ -165,7 +164,7 @@ function News() {
           </IconButton>
           <IconButton
             component="a"
-            href="https://soundcloud.com/big-john-192594714"
+            href="https://www.threads.net/@bigjohnmuzik?xmt=AQGzEI5k2GoyeZuBWXk31jlbLgg_5EUXXbSIAvxJeQpZWc8"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
