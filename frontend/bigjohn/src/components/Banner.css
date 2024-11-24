@@ -60,8 +60,11 @@ h3 {
 }
 
 .banner-image{
-        height: 79vw;
-        margin-right: 20vw;
+    height: 66vw;
+    margin-right: 0vw;
+    margin-top: 19vh;
+    border: none;
+    mix-blend-mode: luminosity;
     }
 
 .banner-container {
@@ -96,9 +99,13 @@ h3 {
 
 .logo {
     height: 37vh;
-    position: absolute;
-    bottom: 0vh;
-    right: 16vw;
+    position: relative;
+    top: 19vh;
+    right: 10vw;
+    border: none;
+    padding: 47px;
+    background-color: black;
+    background-color: #000000de;
 }
 
 .row {

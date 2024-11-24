@@ -3,7 +3,7 @@ import './Banner.css'; // Make sure to create this CSS file for styling
 
 const Banner = ({ headline, backgroundImage, backgroundVideo }) => {
     return (
-        <div className="banner-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div className="banner-container">
             <img className="banner-image" src={backgroundImage} alt="Big John" />
             <video className="banner-video" autoPlay loop muted>
                 <source src={backgroundVideo} type="video/mp4" />

@@ -14,7 +14,7 @@ import {
   DefaultAudioLayout,
   defaultLayoutIcons,
 } from "@vidstack/react/player/layouts/default";
-import backgroundImage from "./video/john edit3.png";
+import backgroundImage from "./video/john4.png";
 import videoUrl from "./video/20241009212703.mp4"; // Import the video file
 import { Box, IconButton } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -28,12 +28,12 @@ function App() {
   const [spotifyEmbed, setSpotifyEmbed] = useState(null);
 
   const playlist = [
-    { title: "JUMP UP", src: "/assets/YouandIforever-2.mp3" },
+    { title: "JUMP UP", src: "" },
     {
       title: "Destiny Killer",
-      src: "/assets/Big John - Destiny Killer  Edith.mp3",
+      src: "",
     },
-    { title: "Song 3", src: "/assets/song3.mp3" },
+    { title: "Truthful Reggae Man", src: "" },
   ];
 
   const BackendUrl = process.env.REACT_APP_BACKENDURL;
