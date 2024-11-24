@@ -137,7 +137,7 @@ function News() {
         >
           <IconButton
             component="a"
-            href="https://www.instagram.com"
+            href="https://www.instagram.com/bigjohnmuzik/?hl=en"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
@@ -146,7 +146,7 @@ function News() {
           </IconButton>
           <IconButton
             component="a"
-            href="https://www.spotify.com"
+            href="https://open.spotify.com/artist/7d1omhMKPYbBOTVsqinKte?si=48YSIxKOQkSfN3EhUCeyAg"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
@@ -173,7 +173,7 @@ function News() {
           </IconButton>
           <IconButton
             component="a"
-            href="https://www.youtube.com"
+            href="https://www.youtube.com/channel/UC5YeDIhooVYZF3CUieT5dIw"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
