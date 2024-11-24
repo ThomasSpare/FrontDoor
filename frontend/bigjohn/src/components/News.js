@@ -90,7 +90,12 @@ function News() {
   return (
     <Grid2 container spacing={4}>
       <Grid2 id="news" item xs={6} md={8}>
-        <Typography variant="h1" component="h1" gutterBottom>
+        <Typography
+          style={{ color: "gray" }}
+          variant="h1"
+          component="h1"
+          gutterBottom
+        >
           News
         </Typography>
         {posts.map((post) => (

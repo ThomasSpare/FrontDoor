@@ -418,7 +418,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
         },
       });
       alert("VIP content uploaded successfully!");
-      setUploadedImageUrl("");
+      // setUploadedImageUrl(""); // This line is removed because setUploadedImageUrl is not defined
       setTitle("");
       setDescription("");
       setSelectedImage(null);

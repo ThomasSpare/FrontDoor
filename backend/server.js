@@ -3,9 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const multer = require("multer");
-const multerS3 = require("multer-s3");
 const mongoose = require("mongoose");
 require("dotenv").config(); // Load environment variables
 
@@ -75,16 +73,9 @@ const s3Client = new S3Client({
   },
 });
 
-// Configure Multer to use S3 for storage
-const upload = multer({
-  storage: multerS3({
-    s3: s3Client,
-    bucket: process.env.S3_BUCKET_NAME,
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString() + "-" + file.originalname);
-    },
-  }),
-});
+// Configure Multer for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Connect to MongoDB
 mongoose
@@ -276,11 +267,27 @@ app.post(
 );
 
 // Image upload route
-app.post("/api/upload", upload.single("image"), (req, res) => {
+app.post("/api/upload", upload.single("image"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
-  res.status(201).json({ imageUrl: req.file.location });
+
+  const params = {
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: Date.now().toString() + "-" + req.file.originalname,
+    Body: req.file.buffer,
+    ContentType: req.file.mimetype,
+  };
+
+  try {
+    const command = new PutObjectCommand(params);
+    const data = await s3Client.send(command);
+    const imageUrl = `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
+    res.status(201).json({ imageUrl });
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    res.status(500).json({ message: "Error uploading image" });
+  }
 });
 
 app.listen(port, () => {

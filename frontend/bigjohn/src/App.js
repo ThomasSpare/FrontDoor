@@ -20,6 +20,7 @@ import { Box, IconButton } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VipArea from "./pages/VipArea";
+import "./App.css";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
