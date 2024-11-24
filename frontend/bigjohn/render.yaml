@@ -1,8 +1,9 @@
 services:
   - type: web
     name: frontend-bigjohn
-    buildCommand: npm run build
+    buildCommand: npm install && npm run build
     staticPublish: true
+    publishPath: build
     routes:
       - type: rewrite
         source: /*
