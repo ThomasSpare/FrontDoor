@@ -1,6 +1,4 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const axios = require("axios");
@@ -13,8 +11,6 @@ require("dotenv").config(); // Load environment variables
 
 const app = express();
 const port = process.env.PORT || 10000;
-const currentDir = __dirname;
-const buildPath = path.resolve(__dirname, "build");
 
 // Middleware
 app.use(
@@ -285,31 +281,6 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
   res.status(201).json({ imageUrl: req.file.location });
-});
-
-// Serve static files from the React app
-app.use(express.static(buildPath));
-
-console.log("Current directory:", currentDir);
-console.log("Looking for build at:", buildPath);
-
-// Check if build directory exists
-if (!fs.existsSync(buildPath)) {
-  console.error(`Build directory not found at: ${buildPath}`);
-}
-
-// The "catchall" handler
-app.get("*", (req, res) => {
-  const indexPath = path.join(buildPath, "index.html");
-
-  if (!fs.existsSync(indexPath)) {
-    console.error(`index.html not found at: ${indexPath}`);
-    return res
-      .status(404)
-      .send(`Build files not found. Looked in: ${indexPath}`);
-  }
-
-  res.sendFile(indexPath);
 });
 
 app.listen(port, () => {
