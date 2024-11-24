@@ -4,8 +4,10 @@ import { Navigate } from "react-router-dom";
 
 const VipProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth0();
+  console.log("VipProtectedRoute rendered", { isAuthenticated });
 
-  return isAuthenticated ? children : <Navigate to="/vip" />;
+  // Redirect to home page if not authenticated, not back to /vip
+  return isAuthenticated ? children : <Navigate to="/" />;
 };
 
 export default VipProtectedRoute;

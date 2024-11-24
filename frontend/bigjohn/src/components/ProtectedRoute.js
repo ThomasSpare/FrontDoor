@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import NewsEditor from "./NewsEditor"; // Ensure correct import
 import "./ProtectedRoute.css";
 
-const ProtectedRoute = ({ element: Component, ...rest }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const ProtectedRoute = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check if already authenticated in session storage
+    return sessionStorage.getItem("isNewsEditorAuthenticated") === "true";
+  });
   const [password, setPassword] = useState("");
+  console.log("ProtectedRoute rendered", { isAuthenticated });
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -13,14 +16,24 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   const handleLogin = () => {
     if (password === process.env.REACT_APP_PROTECTED_PASSWORD) {
       setIsAuthenticated(true);
+      // Store authentication state in session storage
+      sessionStorage.setItem("isNewsEditorAuthenticated", "true");
     } else {
       alert("Incorrect password");
     }
   };
 
-  return isAuthenticated ? (
-    <NewsEditor {...rest} />
-  ) : (
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
+  if (isAuthenticated) {
+    return children;
+  }
+
+  return (
     <div className="password_div">
       <h2>Password Protected</h2>
       <input
@@ -28,6 +41,8 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
         placeholder="Enter password"
         value={password}
         onChange={handlePasswordChange}
+        onKeyPress={handleKeyPress}
+        autoFocus
       />
       <button onClick={handleLogin} style={{ width: "16vw", marginTop: "2vh" }}>
         Login
