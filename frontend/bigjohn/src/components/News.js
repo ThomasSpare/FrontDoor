@@ -6,6 +6,7 @@ import {
   faFacebook,
   faXTwitter,
   faYoutube,
+  faSoundcloud,
 } from "@fortawesome/free-brands-svg-icons";
 import { convertFromRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
@@ -156,6 +157,15 @@ function News() {
           <IconButton
             component="a"
             href="https://www.threads.net/@bigjohnmuzik?xmt=AQGzEI5k2GoyeZuBWXk31jlbLgg_5EUXXbSIAvxJeQpZWc8"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ marginBottom: 1 }}
+          >
+            <FontAwesomeIcon icon={faSoundcloud} size="2x" />
+          </IconButton>
+          <IconButton
+            component="a"
+            href="https://soundcloud.com/big-john-192594714"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
