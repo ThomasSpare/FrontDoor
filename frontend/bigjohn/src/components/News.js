@@ -155,16 +155,7 @@ function News() {
           </IconButton>
           <IconButton
             component="a"
-            href="https://www.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ marginBottom: 1 }}
-          >
-            <FontAwesomeIcon icon={faFacebook} size="2x" />
-          </IconButton>
-          <IconButton
-            component="a"
-            href="https://www.x.com"
+            href="https://www.threads.net/@bigjohnmuzik?xmt=AQGzEI5k2GoyeZuBWXk31jlbLgg_5EUXXbSIAvxJeQpZWc8"
             target="_blank"
             rel="noopener noreferrer"
             sx={{ marginBottom: 1 }}
