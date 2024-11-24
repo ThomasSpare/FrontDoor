@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: frontend-bigjohn
+    buildCommand: npm run build
+    staticPublish: true
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
