@@ -39,7 +39,29 @@ function App() {
   const BackendUrl = process.env.REACT_APP_BACKENDURL;
 
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-
+  const people = [
+    {
+      name: "P-Man",
+      role: "Manager",
+      imageUrl:
+        "https://res.cloudinary.com/djunroohl/image/upload/v1732570857/d8b8ab0e-1a94-49e6-93de-6c1c4b940128_tegnye.jpg",
+      link: "https://example.com/johndoe",
+    },
+    {
+      name: "DR MACXY",
+      role: "Business Manager",
+      imageUrl:
+        "https://res.cloudinary.com/djunroohl/image/upload/v1732570856/IMG_2480_vzmewz.jpg",
+      link: "https://example.com/janesmith",
+    },
+    {
+      name: "Thomas Spåre",
+      role: "Artist Development Manager",
+      imageUrl:
+        "https://res.cloudinary.com/djunroohl/image/upload/v1732570856/IMG_3959_jaji6b.jpg",
+      link: "https://damrec.se",
+    },
+  ];
   useEffect(() => {
     const fetchSpotifyEmbed = async () => {
       try {
@@ -145,6 +167,56 @@ function App() {
                 dangerouslySetInnerHTML={{ __html: spotifyEmbed.embedCode }}
               />
             )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+                marginTop: "20px",
+              }}
+            ></div>
+            <h2
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                color: "gray",
+              }}
+            >
+              the team
+            </h2>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+                marginTop: "20px",
+              }}
+            >
+              {people.map((person, index) => (
+                <div key={index} style={{ textAlign: "center" }}>
+                  <a
+                    href={person.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={person.imageUrl}
+                      alt={person.name}
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        borderRadius: "50%",
+                        padding: "0vw",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </a>
+                  <h3 style={{ color: "aliceblue" }}>{person.name}</h3>
+                  <p style={{ color: "aliceblue" }}>{person.role}</p>
+                </div>
+              ))}
+            </div>
+            ;
           </>
         }
       />
@@ -167,5 +239,4 @@ function App() {
     </Routes>
   );
 }
-
 export default App;
