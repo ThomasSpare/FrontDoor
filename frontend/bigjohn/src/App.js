@@ -180,6 +180,7 @@ function App() {
                 display: "flex",
                 justifyContent: "center",
                 color: "gray",
+                marginTop: "50vh",
               }}
             >
               the team
