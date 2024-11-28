@@ -94,7 +94,11 @@ const VipArea = () => {
     <div className="vipBackground">
       <h1>VIP Area</h1>
       {posts.map((post) => (
-        <Card key={post._id} sx={{ marginBottom: 2 }}>
+        <Card
+          style={{ backgroundColor: "darkslategray" }}
+          key={post._id}
+          sx={{ marginBottom: 2 }}
+        >
           <CardContent>
             <Typography variant="body2" color="textSecondary" gutterBottom>
               {formatDate(post.uploadDate)}
@@ -108,7 +112,11 @@ const VipArea = () => {
               {post.title}
             </Typography>
             {post.description && (
-              <Typography variant="body1" component="p">
+              <Typography
+                style={{ color: "seashell" }}
+                variant="body1"
+                component="p"
+              >
                 {post.description}
               </Typography>
             )}
