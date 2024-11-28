@@ -16,14 +16,16 @@ import "./VipArea.css";
 const BackendUrl = process.env.REACT_APP_BACKENDURL;
 
 const VipArea = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const [posts, setPosts] = useState([]);
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
-    fetchVipContent();
-  }, [isAuthenticated, getAccessTokenSilently]);
+    if (!isLoading) {
+      fetchVipContent();
+    }
+  }, [isAuthenticated, isLoading, getAccessTokenSilently]);
 
   const fetchVipContent = async () => {
     try {
@@ -83,6 +85,10 @@ const VipArea = () => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
