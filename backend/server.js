@@ -245,9 +245,38 @@ app.post(
   ]),
   async (req, res) => {
     const { title, description } = req.body;
-    const imageUrl = req.files.image ? req.files.image[0].location : null;
-    const videoUrl = req.files.video ? req.files.video[0].location : null;
-    const audioUrl = req.files.audio ? req.files.audio[0].location : null;
+
+    const uploadFileToS3 = async (file) => {
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: Date.now().toString() + "-" + file.originalname,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      };
+
+      try {
+        const command = new PutObjectCommand(params);
+        await s3Client.send(command);
+        return `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
+      } catch (error) {
+        console.error("Error uploading file to S3:", error);
+        throw new Error("Error uploading file to S3");
+      }
+    };
+
+    let imageUrl = null;
+    let videoUrl = null;
+    let audioUrl = null;
+
+    if (req.files.image) {
+      imageUrl = await uploadFileToS3(req.files.image[0]);
+    }
+    if (req.files.video) {
+      videoUrl = await uploadFileToS3(req.files.video[0]);
+    }
+    if (req.files.audio) {
+      audioUrl = await uploadFileToS3(req.files.audio[0]);
+    }
 
     const vipContent = new VipContent({
       title,
