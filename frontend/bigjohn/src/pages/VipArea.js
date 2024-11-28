@@ -113,7 +113,12 @@ const VipArea = () => {
             </Typography>
             {post.description && (
               <Typography
-                style={{ color: "seashell" }}
+                style={{
+                  color: "seashell",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginRight: "10vw",
+                }}
                 variant="body1"
                 component="p"
               >
