@@ -11,3 +11,11 @@ img {
     border-radius: 30px;
     border: 8px solid #00000040;
 }
+
+.vipBackground {
+    background-color: darkslategray;
+}
+
+.postTitle h2{
+    color: black;
+}

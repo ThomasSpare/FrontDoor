@@ -91,7 +91,7 @@ const VipArea = () => {
   }
 
   return (
-    <div>
+    <div className="vipBackground">
       <h1>VIP Area</h1>
       {posts.map((post) => (
         <Card key={post._id} sx={{ marginBottom: 2 }}>
@@ -99,7 +99,12 @@ const VipArea = () => {
             <Typography variant="body2" color="textSecondary" gutterBottom>
               {formatDate(post.uploadDate)}
             </Typography>
-            <Typography variant="h5" component="h2" gutterBottom>
+            <Typography
+              className="postTitle"
+              variant="h5"
+              component="h2"
+              gutterBottom
+            >
               {post.title}
             </Typography>
             {post.description && (
