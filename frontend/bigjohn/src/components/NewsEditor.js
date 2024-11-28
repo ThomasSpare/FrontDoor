@@ -411,14 +411,13 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      await axios.post(`${BackendUrl}/api/vip`, formData, {
+      const response = await axios.post(`${BackendUrl}/api/vip`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
       alert("VIP content uploaded successfully!");
-      // setUploadedImageUrl(""); // This line is removed because setUploadedImageUrl is not defined
       setTitle("");
       setDescription("");
       setSelectedImage(null);
