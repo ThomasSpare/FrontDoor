@@ -53,7 +53,7 @@ const decorator = new CompositeDecorator([
 ]);
 
 const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isLoading } = useAuth0();
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty(decorator)
   );
@@ -75,13 +75,12 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const [description, setDescription] = useState(""); // State for description
 
   useEffect(() => {
-    fetchVipPosts();
-  }, []);
-
-  useEffect(() => {
-    fetchPosts();
-    fetchSpotifyEmbeds();
-  }, []);
+    if (!isLoading) {
+      fetchVipPosts();
+      fetchPosts();
+      fetchSpotifyEmbeds();
+    }
+  }, [isLoading]);
 
   const fetchPosts = async () => {
     try {
@@ -135,6 +134,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
+
   // The Newseditor submission handler
   const handleSave = async () => {
     const contentState = editorState.getCurrentContent();
@@ -428,6 +428,10 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
       console.error("There was an error uploading the VIP content!", error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="main-editor-div">
