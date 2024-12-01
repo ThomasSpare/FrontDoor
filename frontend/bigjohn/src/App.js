@@ -28,12 +28,10 @@ function App() {
   const [spotifyEmbed, setSpotifyEmbed] = useState(null);
 
   const playlist = [
-    { title: "JUMP UP", src: "" },
     {
-      title: "Destiny Killer",
-      src: "",
+      title: "CRY OF A FATHER - BIG JOHN",
+      src: "./assets/sound/Big John - Gråt av en far (Cry of a Father).m4a",
     },
-    { title: "Truthful Reggae Man", src: "" },
   ];
 
   const BackendUrl = process.env.REACT_APP_BACKENDURL;
