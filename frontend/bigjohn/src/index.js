@@ -13,6 +13,7 @@ root.render(
     domain={authConfig.domain}
     clientId={authConfig.clientId}
     redirectUri={window.location.origin}
+    cacheLocation="localstorage"
     authorizationParams={{
       redirect_uri: window.location.origin,
       audience: authConfig.audience,
