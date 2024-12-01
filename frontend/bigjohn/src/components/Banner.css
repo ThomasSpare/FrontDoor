@@ -227,21 +227,37 @@ h3 {
     }
 
 @media screen and (max-width: 425px) {
-    .logo {
-        height: 15vh;
-        position: relative;
-        top: 50px;
-        right: 145vw;
-        margin-bottom: 67vh;
+        .banner-container{
+            position: relative !important;
+            display: flex;
+            align-items: center;
+            flex-direction: column-reverse;
+        }
+        .logo {
+            height: 20vh;
+            padding: 11px;
+            background-color: #000000c7;
+            border-radius: 26px;
+            right: 1vw;
+            margin-bottom: 59vh;
+            z-index: 99999 !important;
+            margin-top: 8px;
+            position: relative !important;
+        }
+        .img{
+            padding: 0;
+            border-radius: 0;
+            border: 0;
         }
         .banner-image {
-        height: 82vh;
-        margin-left: 79vw;
-        }
+                display: none !important;
+        
         .main-editor-div h1 {
         font-size: 2rem;
         text-align: center;
-        }      
+        }  
+
+}
 }
     
 
