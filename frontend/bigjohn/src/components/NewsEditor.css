@@ -1,4 +1,3 @@
-
 .card{
     border-style: outset !important;
     border-color: ghostwhite !important;
@@ -6,15 +5,32 @@
     border-radius: 10px !important;
     background-color: lavender !important;
 }
+#root > div > .editorh1{
+    text-align: center;
+    font-size: 100px;
+}
 
 
 @media screen and (max-width: 768px) {
-    div{
-        div {
-            width: -webkit-fill-available !important;
-            margin-left: 1vw;
-            margin-right: 1vw;
-            overflow-x: hidden;
-        }
-    }   
+    div {
+        width: -webkit-fill-available !important;
+        margin-left: 1vw;
+        margin-right: 1vw;
+        overflow-x: hidden;
+    }
+    #root > div > div:nth-child(4) > div > div.MuiButtonGroup-root.MuiButtonGroup-contained.MuiButtonGroup-horizontal.MuiButtonGroup-colorPrimary.css-75uvui-MuiButtonGroup-root {
+        display: inline-flex;
+    }
+}
+
+@media screen and (min-width: 320px) {
+    #root > div > .editorh1{
+        font-size: 60px;
+    }     
+}
+
+@media screen and (min-width: 425px) {
+    #root > div > .editorh1{
+        font-size: 75px;
+    }     
 }

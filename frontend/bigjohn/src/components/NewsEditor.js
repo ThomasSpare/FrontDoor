@@ -435,7 +435,9 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
 
   return (
     <div className="main-editor-div">
-      <h1 style={{ margin: "14px !important" }}>News Editor</h1>
+      <h1 className="editorh1" style={{ margin: "14px !important" }}>
+        News Editor
+      </h1>
       <h2 style={{ color: "white", margin: "14px !important" }}>
         Front Page Editor
       </h2>
