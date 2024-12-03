@@ -473,6 +473,7 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
           <ButtonGroup
             variant="contained"
             aria-label="outlined primary button group"
+            style={{ display: "inline-flex !important" }}
           >
             <Button onClick={() => toggleInlineStyle("BOLD")}>Bold</Button>
             <Button onClick={() => toggleInlineStyle("ITALIC")}>Italic</Button>
