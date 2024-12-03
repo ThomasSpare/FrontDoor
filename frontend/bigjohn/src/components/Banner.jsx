@@ -5,7 +5,7 @@ const Banner = ({ headline, backgroundImage, backgroundVideo }) => {
     return (
         <div className="banner-container">
             <img className="banner-image" src={backgroundImage} alt="Big John" />
-            <video className="banner-video" autoPlay loop muted>
+            <video className="banner-video" autoPlay loop muted playsInline>
                 <source src={backgroundVideo} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
