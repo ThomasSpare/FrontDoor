@@ -1,3 +1,4 @@
+require("dotenv").config(); // Load environment variables
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -5,7 +6,7 @@ const axios = require("axios");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const mongoose = require("mongoose");
-require("dotenv").config(); // Load environment variables
+const { ManagementClient } = require("auth0");
 
 const app = express();
 const port = process.env.PORT || 10000;
@@ -53,6 +54,14 @@ const jwtCheck = async (req, res, next) => {
     res.status(500).json({ message: "Error obtaining access token" });
   }
 };
+
+// Initialize Auth0 Management Client
+const management = new ManagementClient({
+  domain: process.env.AUTH0_DOMAIN,
+  clientId: process.env.AUTH0_CLIENT_ID,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
+  scope: "read:users",
+});
 
 app.use(jwtCheck);
 
@@ -118,6 +127,17 @@ const vipContentSchema = new mongoose.Schema({
 });
 
 const VipContent = mongoose.model("VipContent", vipContentSchema);
+
+// Endpoint to fetch Auth0 users
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await management.getUsers();
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Error fetching users" });
+  }
+});
 
 // API Routes
 app.get("/api/news", async (req, res) => {

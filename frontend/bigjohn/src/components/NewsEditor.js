@@ -73,12 +73,14 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
   const [spotifyEmbedUrl, setSpotifyEmbedUrl] = useState("");
   const [spotifyEmbeds, setSpotifyEmbeds] = useState([]); // Ensure initial state is an array
   const [description, setDescription] = useState(""); // State for description
+  const [users, setUsers] = useState([]); // State for users
 
   useEffect(() => {
     if (!isLoading) {
       fetchVipPosts();
       fetchPosts();
       fetchSpotifyEmbeds();
+      fetchUsers();
     }
   }, [isLoading]);
 
@@ -124,6 +126,20 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
       setVipPosts(response.data);
     } catch (error) {
       console.error("Error fetching VIP posts:", error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await axios.get(`${BackendUrl}/api/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -812,6 +828,18 @@ const NewsEditor = ({ setUploadedImageUrl = () => {} }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Card
+        className="card"
+        variant="outlined"
+        style={{ padding: "20px", marginBottom: "10px", width: "60vw" }}
+      >
+        <h2>Registered Users</h2>
+        <ul>
+          {users.map((user) => (
+            <li key={user.user_id}>{user.email}</li>
+          ))}
+        </ul>
+      </Card>
     </div>
   );
 };
