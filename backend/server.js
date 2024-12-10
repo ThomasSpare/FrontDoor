@@ -128,14 +128,28 @@ const vipContentSchema = new mongoose.Schema({
 
 const VipContent = mongoose.model("VipContent", vipContentSchema);
 
-// Endpoint to fetch Auth0 users
 app.get("/api/users", async (req, res) => {
   try {
-    const users = await management.getUsers();
-    res.json(users);
+    // Specify page and per_page to manage large user lists
+    const users = await management.getUsers({
+      page: 0,
+      per_page: 50,
+      fields: "email,user_id,name", // Only fetch specific fields
+    });
+
+    // Extract just the emails if that's what you want
+    const userEmails = users.map((user) => user.email);
+
+    res.json(userEmails);
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ message: "Error fetching users" });
+    console.error(
+      "Detailed Auth0 Error:",
+      error.response ? error.response.data : error
+    );
+    res.status(500).json({
+      message: "Error fetching users",
+      errorDetails: error.message,
+    });
   }
 });
 
