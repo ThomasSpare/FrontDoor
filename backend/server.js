@@ -130,14 +130,14 @@ const VipContent = mongoose.model("VipContent", vipContentSchema);
 
 app.get("/api/users", async (req, res) => {
   try {
-    // Specify page and per_page to manage large user lists
-    const users = await management.getUsers({
+    // Use .users.list() instead of .getUsers()
+    const users = await management.users.list({
       page: 0,
       per_page: 50,
-      fields: "email,user_id,name", // Only fetch specific fields
+      fields: "email,user_id,name",
     });
 
-    // Extract just the emails if that's what you want
+    // Extract just the emails
     const userEmails = users.map((user) => user.email);
 
     res.json(userEmails);
