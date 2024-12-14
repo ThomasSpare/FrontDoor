@@ -6,51 +6,65 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<!-- fonts for the forms, VIP area and home page -->
-<link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Rubik+Mono+One&display=swap" rel="stylesheet">
-<!-- End custom fonts -->
- <link fontawesome="all" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" />
+    <!-- fonts for the forms, VIP area and home page -->
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <!-- End custom fonts -->
+    <link fontawesome="all" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" />
 
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
+      name="description"
+      content="BIG JOHN is a reggae and afrobeat artist from Nigeria living in Sweden. Available for gigs and events worldwide."
+    />
+    <meta
+      name="keywords"
+      content="BIG JOHN, reggae artist, afrobeat artist, gigs, events, Sweden, music, performances"
+    />
+    <meta name="author" content="BIG JOHN" />
+    <meta
       name="BIG JOHN ARTIST WEBSITE"
-      content="BIG JOHN is a music artist from Nigeria living in Sweden."/>
+      content="BIG JOHN is a music artist from Nigeria living in Sweden."
+    />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
     <title>Big Johns Music</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "MusicGroup",
+        "name": "BIG JOHN",
+        "description": "BIG JOHN is a reggae and afrobeat artist from Nigeria living in Sweden. Available for gigs and events worldwide.",
+        "url": "https://bigjohnmuzik.com",
+        "sameAs": [
+          "https://www.instagram.com/bigjohnmuzik/?hl=en",
+          "https://open.spotify.com/artist/7d1omhMKPYbBOTVsqinKte?si=48YSIxKOQkSfN3EhUCeyAg",
+          "https://soundcloud.com/big-john-192594714",
+          "https://www.threads.net/@bigjohnmuzik?xmt=AQGzEI5k2GoyeZuBWXk31jlbLgg_5EUXXbSIAvxJeQpZWc8",
+          "https://www.youtube.com/channel/UC5YeDIhooVYZF3CUieT5dIw",
+        ],
+        "member": {
+          "@type": "Person",
+          "name": "BIG JOHN",
+          "jobTitle": "Musician",
+          "nationality": "Nigerian, Sweden"
+        },
+        "genre": ["Reggae", "Afrobeat"],
+        "potentialAction": {
+          "@type": "PerformAction",
+          "target": "https://bigjohnmuzik.com"
+        }
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
