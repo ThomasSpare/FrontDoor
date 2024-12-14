@@ -7,7 +7,6 @@ const ProtectedRoute = ({ children }) => {
     return sessionStorage.getItem("isNewsEditorAuthenticated") === "true";
   });
   const [password, setPassword] = useState("");
-  console.log("ProtectedRoute rendered", { isAuthenticated });
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);

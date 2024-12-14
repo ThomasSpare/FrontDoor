@@ -130,20 +130,44 @@ const VipContent = mongoose.model("VipContent", vipContentSchema);
 
 app.get("/api/users", async (req, res) => {
   try {
-    // Use .users.list() instead of .getUsers()
-    const users = await management.users.list({
-      page: 0,
-      per_page: 50,
-      fields: "email,user_id,name",
-    });
+    // First, get an access token
+    const tokenResponse = await axios.post(
+      `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      {
+        client_id: process.env.AUTH0_CLIENT_ID,
+        client_secret: process.env.AUTH0_CLIENT_SECRET,
+        audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+        grant_type: "client_credentials",
+      },
+      {
+        headers: { "content-type": "application/json" },
+      }
+    );
 
-    // Extract just the emails
-    const userEmails = users.map((user) => user.email);
+    // Then use the token to fetch users
+    const usersResponse = await axios.get(
+      `https://${process.env.AUTH0_DOMAIN}/api/v2/users`,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenResponse.data.access_token}`,
+        },
+        params: {
+          // Optional parameters to control the request
+          page: 0,
+          per_page: 50,
+          // You can add fields to select specific user attributes
+          fields: "email,user_id,name",
+        },
+      }
+    );
+
+    // Extract emails or full user data as needed
+    const userEmails = usersResponse.data.map((user) => user.email);
 
     res.json(userEmails);
   } catch (error) {
     console.error(
-      "Detailed Auth0 Error:",
+      "Error fetching users:",
       error.response ? error.response.data : error
     );
     res.status(500).json({

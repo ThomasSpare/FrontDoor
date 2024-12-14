@@ -4,7 +4,6 @@ import { Navigate } from "react-router-dom";
 
 const VipProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth0();
-  console.log("VipProtectedRoute rendered", { isAuthenticated, isLoading });
 
   if (isLoading) {
     return <div>Loading...</div>;
