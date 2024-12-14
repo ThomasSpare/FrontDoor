@@ -84,7 +84,10 @@ const s3Client = new S3Client({
 
 // Configure Multer for file uploads
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 400 * 1024 * 1024 }, // Set file size limit to 400MB
+});
 
 // Connect to MongoDB
 mongoose
