@@ -1,0 +1,84 @@
+.news-content img{
+    width: 50vw;
+}
+.css-480o17-MuiGrid-root>.MuiGrid-item {
+    background-image: url("https://res.cloudinary.com/djunroohl/image/upload/v1729350618/Instagram_dlgcl0.png");
+    z-index: 999 !important;
+}
+
+.css-dvxtzn {
+    flex-direction: row !important;
+    justify-content: space-between;
+}
+svg{
+    width: 70px;
+}
+
+#news > div > div{
+    max-width: 35vw !important;
+    background-color: seashell;
+}
+
+@media screen and (max-width: 1024px){
+    #news > div > div {
+        max-width: 60vw !important;
+    }
+    #news > div > div > img {
+        width: 100% !important;
+    }
+    #releases {
+        min-width: 95vw;
+    }
+    .css-xfnn93 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+    #releases > h2 {
+        display: flex !important;
+        justify-content: center !important;
+    }
+}
+
+@media screen and (max-width: 768px){
+    #news > div > div {
+        max-width: 80vw !important;
+    }
+    #news > div > div > img {
+        width: 100% !important;
+    }
+}
+
+
+@media screen and (max-width: 425px){
+    #news > div > div {
+        max-width: 100vw !important;
+    }
+    #news > div > div > img {
+        width: 100% !important;
+    }
+    .css-75uvui-MuiButtonGroup-root {
+        display: -webkit-inline-box;
+        display: -webkit-inline-flex;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        border-radius: 4px;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        flex-wrap: wrap;
+    }
+    .title-input{
+        width: 100vw;
+        height: 4vh;
+        font-size: large;
+        font-weight: bolder;
+    }
+    svg{
+        width: 50px;
+    }
+    .css-dvxtzn {
+        flex-direction: row !important;
+        justify-content: space-between;
+    }
+}

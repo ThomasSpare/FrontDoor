@@ -1,0 +1,38 @@
+# Ignore node_modules directory
+node_modules/
+frontend/bigjohn/node_modules/
+backend/node_modules/
+frontend/bigjohn/node_modules/.cache/default-development/
+FrontDoor.git/objects/pack/
+
+# Ignore log files
+*.log
+
+# Ignore build directories
+dist/
+build/
+
+# Ignore environment variable files
+.env
+frontend/bigjohn/.env
+backend/.env
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignore compiled files
+*.out
+*.class
+*.pyc
+*.o
+*.obj
